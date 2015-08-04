@@ -1,9 +1,9 @@
 The data server and test code are written using the nodejs language. 
 
 The test_data_server writes randomly generated 3d points that are in spherical coordinate system to all connected clients.  
-The byte stream is in the following format. (All data is Little Endian)
+The byte stream is in the following format and is encoded using slip. (All data is Little Endian)
 
-| float32 radius | float32 theta | float32 phi | ...
+SLIP_PACKET(| float32 radius | float32 theta | float32 phi | ...)
 
 Other applications can be written in any language on any platform and can connect to the data server and begin
 processing the data.

@@ -9,6 +9,7 @@
   "author": "",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "net": "~1.0.2"
+    "net": "~1.0.2",
+    "node-slip": "0.0.2"
   }
 }

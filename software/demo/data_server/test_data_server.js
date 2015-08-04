@@ -11,6 +11,10 @@
 // import network api
 var net = require('net');
 
+// import slip api
+var slip = require('node-slip');
+
+
 // import data_types
 var data_types = require('./data_types');
 
@@ -82,6 +86,7 @@ var server = net.createServer(function(c) {
 
   // add connection to array
   connections.push(c);
+
   console.log(connections.length + ' connections');
 });
 
@@ -102,8 +107,10 @@ server.on('error', function(err) {
 setInterval(function() {
   for(var c in connections)
   {
-    connections[c].write(get_next_packet());
+    // encode packet and send it
+    connections[c].write(slip.generator(get_next_packet()));
   } 
+
 }, 1000/scans_per_second);
 
 // generate next data packet for testing 
