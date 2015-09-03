@@ -29,13 +29,13 @@ if(process.argv.length >= 3)
 var connections = [];
 
 // number of data_points to generate
-var num_points = 10;
+var num_points = 1000;
 
 // max distance for testing
 var max_distance = 10;
 
 // simulated scans per second
-var scans_per_second = 5;
+var scans_per_second = 10;
 
 // slew rate
 var slew_rate = 100;
