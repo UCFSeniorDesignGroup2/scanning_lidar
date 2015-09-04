@@ -1,0 +1,29 @@
+﻿Field=Comment~String~Comment~100|Field=Description~String~Description~100|Field=Designator~String~Designator~100|Field=Footprint~String~Footprint~100|Field=LibRef~String~LibRef~100|Field=Quantity~Integer~Quantity~100|ReportField=Currency~<none>|ReportField=ProductionQuantity~1|ReportField=ProjectFileName~BaseModule.PrjPcb|ReportField=ProjectFullPath~C:\Users\Public\Documents\Altium\Projects\BaseModule\BaseModule.PrjPcb|ReportField=Title~Bill of Materials For Project [BaseModule.PrjPcb] (No PCB Document Selected)|ReportField=TotalQuantity~67|ReportField=ReportTime~4:03:36 PM|ReportField=ReportDate~7/31/2015|ReportField=ReportDateTime~7/31/2015 4:03:36 PM|ReportField=OutputName~Bill of Materials|ReportField=OutputType~BOM_PartType|ReportField=GeneratorName~BOM|ReportField=GeneratorDescription~Bill of Materials|ReportField=VariantName~None|ReportField=Address1~|ReportField=Address2~|ReportField=Address3~|ReportField=Address4~|ReportField=Application_BuildNumber~|ReportField=ApprovedBy~|ReportField=Author~|ReportField=CheckedBy~|ReportField=CompanyName~|ReportField=CurrentDate~7/31/2015|ReportField=CurrentTime~4:03:34 PM|ReportField=Date~|ReportField=DocumentFullPathAndName~C:\Users\Public\Documents\Altium\Projects\BaseModule\BaseModuleTop.SchDoc|ReportField=DocumentName~BaseModuleTop.SchDoc|ReportField=DocumentNumber~|ReportField=DrawnBy~|ReportField=Engineer~|ReportField=ImagePath~|ReportField=ModifiedDate~7/31/2015|ReportField=Organization~|ReportField=ProjectName~BaseModule.PrjPcb|ReportField=Revision~|ReportField=Rule~|ReportField=SheetNumber~|ReportField=SheetTotal~|ReportField=Time~|ReportField=Title~|ReportField=DataSourceFileName~BaseModule.PrjPcb|ReportField=DataSourceFullPath~C:\Users\Public\Documents\Altium\Projects\BaseModule\BaseModule.PrjPcb
+CAP 1uF 6.3V 0805(2012)|CAP 1uF 6.3V ±5% 0805 (2012 Metric) Thickness 1mm SMD|C1, C4, C6, C7, C9, C43|CAPC0805(2012)100_L|CMP-1036-04730-1|6
+CAP 100nF 6.3V 0805(2012)|CAP 100nF 6.3V ±5% 0805 (2012 Metric) Thickness 1mm SMD|C2, C5, C8, C10, C18, C19, C20, C21, C22, C23, C24, C25, C26, C28, C29, C30, C31, C32, C33, C34, C35, C36, C37, C38, C39, C42|CAPC0805(2012)100_L|CMP-1036-04390-1|26
+CAP 10uF 6.3V 0805(2012)|CAP 10uF 6.3V ±5% 0805 (2012 Metric) Thickness 1mm SMD|C3|CAPC0805(2012)100_L|CMP-1036-04730-1|1
+CAP 3.9pF 10V 0805(2012)|CAP 3.9pF 10V ±0.1pF 0805 (2012 Metric) Thickness 0.75mm SMD|C11, C13|CAPC0805(2012)75_L|CMP-1036-00455-1|2
+CAP 10pF 10V 0805(2012)|CAP 10pF 10V ±0.25pF 0805 (2012 Metric) Thickness 1mm SMD|C12, C14|CAPC0805(2012)100_M|CMP-1036-00821-1|2
+CAP 1.5uF 6.3V 0805(2012)|CAP 1.5uF 6.3V ±20% 0805 (2012 Metric) Thickness 1.45mm SMD|C15, C17|CAPC0805(2012)145_M|CMP-1036-04784-1|2
+CAP 100nF 0805(2012)|CAP 1.5uF 6.3V ±20% 0805 (2012 Metric) Thickness 1.45mm SMD|C16|CAPC0805(2012)145_M|CMP-1036-04784-1|1
+CAP 4.7uF 6.3V 0805(2012)|CAP 4.7uF 6.3V ±5% 0805 (2012 Metric) Thickness 1.45mm SMD|C27|CAPC0805(2012)145_L|CMP-1036-04781-1|1
+CAP 1uF 6.3V 0805(2012)|CAP 1uF 6.3V ±5% 0805 (2012 Metric) Thickness 1.45mm SMD|C40, C41|CAPC0805(2012)145_L|CMP-1036-04781-1|2
+CAP 470pF 6.3V 0805(2012)|CAP 470pF 6.3V ±5% 0805 (2012 Metric) Thickness 1mm SMD|C44|CAPC0805(2012)100_L|CMP-1036-02639-1|1
+BAT41KFILM|DIODE SCHOTTKY 100V 200MA SOD523|D1|BAT41KFILM|BAT41KFILM|1
+APG1608CGKC/T|LED, SMT, 0603(1608), 0.25mm Thickness, Green|DS1|KING-LED0603-25-GREEN_V|CMP-0239-00001-1|1
+2173157-3|USB Connectors SPLASH PROOF MICRO 5P USB B-TYPE|J1|2173157-3|2173157-3|1
+ICSP-6 No Legs|6 Pin Connector|J2|TC2030-IDC-NL|ICSP-6 No Legs|1
+LI0603E470R-10|FERRITE CHIP 47 OHMS 500MA 0603|L1|LI0603E470R-10|LI0603E470R-10|1
+Header 2|Header, 2-Pin|P1, P3|HDR1X2|Header 2|2
+Header 4|Header, 4-Pin|P2, P4|HDR1X4|Header 4|2
+Header 6X2A|Header, 6-Pin, Dual row|P5, P7|HDR2X6_CEN|Header 6X2A|2
+Header 3|Header, 3-Pin|P6, P8|HDR1X3|Header 3|2
+22R 5% 0805(2012)|22R 0.125W 5% 0805 (2012 Metric)  SMD|R1, R2|RESC0805(2012)_L|CMP-1013-00034-1|2
+470K 5% 0805(2012)|470K 0.125W 5% 0805 (2012 Metric)  SMD|R3|RESC0805(2012)_L|CMP-1013-00138-1|1
+SW-PB|Switch|S1|SPST-2|SW-PB|1
+TPD2E001-SOT_DRL-5|TVS DIODE 5.5VWM 100VC SOT5|U1|TPD2E001DRLR|TPD2E001DRLR|1
+STM32F407VET6|ARM Cortex-M4 32-bit MCU+FPU, 210 DMIPS, 512 kB Flash, 192 kB Internal RAM, 82 I/Os, 100-pin LQFP, -40 to 85 degC, Tray|U2|STM-LQFP100_M|CMP-0243-00016-3|1
+TC1015-3.3VCT713|50 mA, 100 mA and 150 mA CMOS LDOs with Active-Low Shutdown and Reference Bypass, 5-Pin SOT-23, Extended Temperature, Tape and Reel|U3|SOT-23-CT5_L|CMP-0136-00586-1|1
+LTC4411ES5#TRMPBF|Integrated Switch: Replaces Power Supply OR, 2.6 to 5.5 V Vin, 5-pin SOT23 (S5-5), -40 to 85 degC, Pb-Free, Mini Tape and Reel|U4|LT-S5-5-TSOT-23_L|CMP-0479-00414-1|1
+ABM3B-8.000MHZ-10-1-U-T|CRYSTAL 8MHZ 10PF SMD|Y1|ABM3B Series|ABM3B Series|1
+ABS06-107-32.768KHZ-T|CRYSTAL 32.768 KHZ 4PF SMD|Y2|ABS06-107|ABS06-107|1
