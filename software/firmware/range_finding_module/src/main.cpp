@@ -38,7 +38,7 @@ void main_task(void* args)
 	lidar.SetI2CInterface(HAL::HAL_I2C1::GetInstance());
 
 	// set the gpio interface
-	lidar.SetGPIOInterface(HAL::GPIO_LidarLiteV2_PWR::GetInstance());
+	lidar.SetPwrPinInterface(HAL::GPIO_LidarLiteV2_PWR::GetInstance());
 
 	 // set the configuration
 	lidar.SetConfiguration(Drivers::LidarLiteConfig_High_RepRate);

@@ -29,7 +29,8 @@ LidarLiteV2::LidarLiteV2(uint8_t i2c_address)
 {
 	mI2CAddress = i2c_address;
 	mI2CInterface = NULL;
-	mGPIOInterface = NULL;
+	mPwrPinInterface = NULL;
+	mModePinInterface = NULL;
 	mConfiguration = NULL;
 }
 
@@ -57,14 +58,14 @@ LidarLiteV2::~LidarLiteV2()
  */
 int LidarLiteV2::Initialize()
 {
-	if(mGPIOInterface != NULL)
+	if(mPwrPinInterface != NULL)
 	{
 		// reset the device
-		mGPIOInterface->TakeControl();
-		mGPIOInterface->SetPinState(HAL::HAL_GPIO_PIN::PIN_STATE::LOW);
+		mPwrPinInterface->TakeControl();
+		mPwrPinInterface->SetPinState(HAL::HAL_GPIO_PIN::PIN_STATE::LOW);
 		OAL::Thread::Sleep(100);
-		mGPIOInterface->SetPinState(HAL::HAL_GPIO_PIN::PIN_STATE::HIGH);
-		mGPIOInterface->ReleaseControl();
+		mPwrPinInterface->SetPinState(HAL::HAL_GPIO_PIN::PIN_STATE::HIGH);
+		mPwrPinInterface->ReleaseControl();
 	}
 	else
 	{
@@ -97,7 +98,7 @@ void LidarLiteV2::SetI2CInterface(HAL::HAL_I2C* interface)
 }
 
 /*
- * SetGPIOInterface:
+ * SetPwrPinInterface:
  * Parameters:
  * 1. (HAL_GPIO_PIN*)gpio_interface
  *
@@ -107,9 +108,25 @@ void LidarLiteV2::SetI2CInterface(HAL::HAL_I2C* interface)
  * Returns:
  * (void)
  */
-void LidarLiteV2::SetGPIOInterface(HAL::HAL_GPIO_PIN* interface)
+void LidarLiteV2::SetPwrPinInterface(HAL::HAL_GPIO_PIN* interface)
 {
-	mGPIOInterface = interface;
+	mPwrPinInterface = interface;
+}
+
+/*
+ * SetModePinInterface:
+ * Parameters:
+ * 1. (HAL_GPIO_PIN*)gpio_interface
+ *
+ * Gives the LidarLiteV2 Driver access to a gpio interface so that
+ * control the mode pin.
+ *
+ * Returns:
+ * (void)
+ */
+void LidarLiteV2::SetModePinInterface(HAL::HAL_GPIO_PIN* interface)
+{
+	mModePinInterface = interface;
 }
 
 /*
@@ -146,9 +163,10 @@ int LidarLiteV2::SetRegister(
 	if(mI2CInterface != NULL)
 	{
 		int ret = 0;
+		uint8_t reg_addr = reg;
 		mI2CInterface->TakeControl();
-		mI2CInterface->TransmitData((mI2CAddress|1), (const uint8_t*)&reg, 1);
-		ret = mI2CInterface->TransmitData((mI2CAddress|1), data, size);
+		mI2CInterface->TransmitData((mI2CAddress & ~1), &reg_addr, 1);
+		ret = mI2CInterface->TransmitData((mI2CAddress & ~1), data, size);
 		mI2CInterface->ReleaseControl();
 		return ret; // data transfer success/failure
 	}

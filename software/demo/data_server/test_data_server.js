@@ -29,16 +29,16 @@ if(process.argv.length >= 3)
 var connections = [];
 
 // number of data_points to generate
-var num_points = 1000;
+var num_points = 500;
 
 // max distance for testing
-var max_distance = 10;
+var max_distance = 100;
 
 // simulated scans per second
 var scans_per_second = 10;
 
 // slew rate
-var slew_rate = 100;
+var slew_rate = 10000;
 
 // array of data points to generate
 var data_points = [];
@@ -53,7 +53,7 @@ var server = net.createServer(function(c) {
   c.on('data', function(data)
   {
     // just print it out
-    console.log(data.toString());
+    console.log('client data: ' + data.length);
   });
 
   // on connection closed

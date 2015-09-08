@@ -37,62 +37,62 @@ namespace Drivers
 		typedef enum
 		{
 			// uP internal control registers
-			COMMAND_CONTROL = 0,
-			SYSTEM_STATUS,
-			MAX_ACQ_CNT,
-			CORRELATION_RECORD_CNT,
-			ACQ_MODE_CONTROL,
-			THRESHOLD_OFFSET,
-			DELAY_REF_L,
-			DELAY_REF_H,
-			REF_PEAK,
-			VELOCITY,
-			DELAY_RET_L,
-			DELAY_RET_H,
-			SIG_PEAK,
-			NOISE_FLOOR,
-			SIGNAL_STRENGTH,
-			DISTANCE_L,
-			DISTANCE_H,
-			THRESHOLD_VALUE,
-			BURST_DELAY,
-			DISTANCE_OFFSET,
-			PREV_DISTANCE_L,
-			PREV_DISTANCE_H,
+			CONTROL_REG_0x00 = 0,
+			CONTROL_REG_0x01,
+			CONTROL_REG_0x02,
+			CONTROL_REG_0x03,
+			CONTROL_REG_0x04,
+			CONTROL_REG_0x05,
+			CONTROL_REG_0x06,
+			CONTROL_REG_0x07,
+			CONTROL_REG_0x08,
+			CONTROL_REG_0x09,
+			CONTROL_REG_0x0A,
+			CONTROL_REG_0x0B,
+			CONTROL_REG_0x0C,
+			CONTROL_REG_0x0D,
+			CONTROL_REG_0x0E,
+			CONTROL_REG_0x0F,
+			CONTROL_REG_0x10,
+			CONTROL_REG_0x11,
+			CONTROL_REG_0x12,
+			CONTROL_REG_0x13,
+			CONTROL_REG_0x14,
+			CONTROL_REG_0x15,
 
 			// correlation control external registers
-			EX_COMMAND_CONTROL = 0x40,
-			EX_HARDWARE_VERSION,
-			EX_PREAMP_CONTROL,
-			EX_TRANSMIT_POWER,
-			EX_RANGE_GATE_L,
-			EX_RANGE_GATE_H,
-			EX_RANGE_PWM_OUT,
-			EX_ACQ_STATUS,
-			EX_MES_PREAMP_STATUS,
-			EX_OUTPUT_PORT,
-			EX_RANGE_CRIT,
-			EX_2ND_PEAK,
-			EX_SOFTWARE_VERSION,
-			EX_RECORD_SIZE_SEL,
-			EX_DATA_ACCESS_PORT,
-			EX_ACQ_SETTINGS,
-			EX_CORRELATION_SIG_L,
-			EX_CORRELATION_SIG_H,
-			EX_SIGNAL_PEAK,
-			EX_CORRELATION_NOISE_FLOOR,
-			EX_SIGNAL_STRENGTH,
-			EX_RESET_CORRELATOR,
-			EX_CORR_DATA_ACCESS_PORT,
-			EX_CLK_SYNC,
-			EX_MES_LASER_PWR,
-			EX_MES_FINE_DELAY,
-			EX_COURSE_DELAY_L,
-			EX_COURSE_DELAY_H,
-			EX_POS_ZERO_CROSSING,
-			EX_NEG_ZERO_CROSSING,
-			EX_PWR_CONTROL,
-			EX_VEL_MEAS_WIN_SETTING
+			EX_CONTROL_REG_0x40 = 0x40,
+			EX_CONTROL_REG_0x41,
+			EX_CONTROL_REG_0x42,
+			EX_CONTROL_REG_0x43,
+			EX_CONTROL_REG_0x44,
+			EX_CONTROL_REG_0x45,
+			EX_CONTROL_REG_0x46,
+			EX_CONTROL_REG_0x47,
+			EX_CONTROL_REG_0x48,
+			EX_CONTROL_REG_0x49,
+			EX_CONTROL_REG_0x4A,
+			EX_CONTROL_REG_0x4B,
+			EX_CONTROL_REG_0x4C,
+			EX_CONTROL_REG_0x4D,
+			EX_CONTROL_REG_0x4E,
+			EX_CONTROL_REG_0x4F,
+			EX_CONTROL_REG_0x50,
+			EX_CONTROL_REG_0x51,
+			EX_CONTROL_REG_0x52,
+			EX_CONTROL_REG_0x53,
+			EX_CONTROL_REG_0x54,
+			EX_CONTROL_REG_0x55,
+			EX_CONTROL_REG_0x56,
+			EX_CONTROL_REG_0x57,
+			EX_CONTROL_REG_0x58,
+			EX_CONTROL_REG_0x59,
+			EX_CONTROL_REG_0x5A,
+			EX_CONTROL_REG_0x5B,
+			EX_CONTROL_REG_0x5C,
+			EX_CONTROL_REG_0x5D,
+			EX_CONTROL_REG_0x5E,
+			EX_CONTROL_REG_0x5F
 
 		} REGISTER;
 
@@ -110,7 +110,10 @@ namespace Drivers
 		void SetI2CInterface(HAL::HAL_I2C* interface);
 
 		// Set the gpio interface for powering the LidarLiteV2 device
-		void SetGPIOInterface(HAL::HAL_GPIO_PIN* gpio_pin);
+		void SetPwrPinInterface(HAL::HAL_GPIO_PIN* gpio_pin);
+
+		// Set the gpio interface for powering the LidarLiteV2 device
+		void SetModePinInterface(HAL::HAL_GPIO_PIN* gpio_pin);
 
 		// Set the configuration of the LidarLiteV2
 		void SetConfiguration(int (*config)(LidarLiteV2*));
@@ -132,8 +135,11 @@ namespace Drivers
 		// Instance of an I2C interface
 		HAL::HAL_I2C* mI2CInterface;
 
-		// Instance of GPIO pin
-		HAL::HAL_GPIO_PIN* mGPIOInterface;
+		// Instance of PWR pin
+		HAL::HAL_GPIO_PIN* mPwrPinInterface;
+
+		// Instance of Mode pin
+		HAL::HAL_GPIO_PIN* mModePinInterface;
 
 		// Configuration
 		int (*mConfiguration)(LidarLiteV2*);

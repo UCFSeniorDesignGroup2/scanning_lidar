@@ -57,7 +57,7 @@ void GPIO_LidarLiteV2_PWR::SetPinState(PIN_STATE state)
  * Returns:
  * PIN_STATE
  */
-GPIO_LidarLiteV2_PWR::PIN_STATE GPIO_LidarLiteV2_PWR::ReadPinState()
+HAL_GPIO_PIN::PIN_STATE GPIO_LidarLiteV2_PWR::ReadPinState()
 {
 	return LOW;
 }
