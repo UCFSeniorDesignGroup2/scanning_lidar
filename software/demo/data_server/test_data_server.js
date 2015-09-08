@@ -29,16 +29,16 @@ if(process.argv.length >= 3)
 var connections = [];
 
 // number of data_points to generate
-var num_points = 50;
+var num_points = 1440;
 
 // max distance for testing
 var max_distance = 25;
 
 // simulated scans per second
-var scans_per_second = 30;
+var scans_per_second = 40;
 
 // slew rate
-var slew_rate = 100;
+var slew_rate = 1000;
 
 // array of data points to generate
 var data_points = [];
@@ -120,21 +120,21 @@ function get_next_packet()
   {
     for(var i = 0; i < num_points; i++)
     {
-      for(var j = 0; j < num_points; j++)
-      {    
+
+
       // generate random data   
-        data_points.push(new data_types.Point3d(
-                                      max_distance/2,
-                                      Math.PI*j/num_points, 
-                                      Math.PI*2*i/num_points));
+      data_points.push(new data_types.Point3d(
+                                    max_distance,
+                                    Math.PI/2, 
+                                    Math.PI*2*i/num_points));
       
-      }
+
     }
   }
   else
   {
     // generate next data set
-    for(var i = 0; i < num_points*num_points; i++)
+    for(var i = 0; i < num_points; i++)
     {
       var radius = Math.random() * max_distance;
       var theta = Math.random() * Math.PI;

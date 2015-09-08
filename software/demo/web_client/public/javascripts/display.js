@@ -39,11 +39,38 @@ function main()
   for(var i = 0; i < 3; i++)
     ary.push(0);
   sphere_vbo.addInstancedArray("offset", ary, 3);
-        
   sphere_vbo.setIndices(sphere.mIndex);
 
+  var cube_vbo = new VertexBufferObject(shader);
+  cube_vbo.addAttributeArray("position", cube_positions, 3);
+  cube_vbo.addAttributeArray("normal", cube_colors, 3);
+  cube_vbo.addAttributeArray("texcoords", cube_texcoords, 2);
+  cube_vbo.addInstancedArray("offset", ary, 3);
+  cube_vbo.setIndices(cube_indices);
+  var cubeNode1 = create_sphere_node(shader, cube_vbo, [0,0,0], [1,0,0]);
+  cubeNode1.scale([2,.5,.5]);
+  cubeNode1.translate([1,0,0]);  
 
-  var sensor_origin = create_sphere_node(shader, sphere_vbo, [0,0,0], [0,1,0]);
+  var cubeNode2 = create_sphere_node(shader, cube_vbo, [0,0,0], [0,1,0]);
+  cubeNode2.scale([.5,2,.5]);
+  cubeNode2.translate([0,1,0]);  
+
+  var cubeNode3 = create_sphere_node(shader, cube_vbo, [0,0,0], [0,0,1]);
+  cubeNode3.scale([.5,.5,2]);
+  cubeNode3.translate([0,0,1]);  
+
+
+
+
+  var sensor_origin = new Node();
+  sensor_origin.addChild(create_sphere_node(shader, sphere_vbo, [0,0,0], [1,1,1]));
+  sensor_origin.addChild(cubeNode1); 
+  sensor_origin.addChild(cubeNode2);
+  sensor_origin.addChild(cubeNode3);
+
+
+
+
   engine.addNode(sensor_origin);
 
 
@@ -76,7 +103,9 @@ function main()
   // create camera and make it orbit scene.(will have a better way to do this some day...
   var camera = new Camera(); 
   // starting pos
-  camera.setPosition([0,0,-25]);
+  camera.setPosition([0,25,0]);
+  camera.rotate(Math.PI/2, [1,0,0]);
+ 
   var mouseLoc = [0,0,0,0];
   var keyspressed = {};
   keyspressed['q'] = 0;
@@ -264,7 +293,7 @@ function main()
   }, 1000));
   engine.addNode(full_screen_node);
 
-  console.log(window.location.href);  
+  
   WebSocketInit();
 
 }
@@ -316,9 +345,10 @@ function WebSocketInit()
   if ("WebSocket" in window)
   {
 
-               
+    var ip_address = "ws:" + window.location.href.split(":")[1] + ":8080";
+              
     // Let us open a web socket
-    var ws = new WebSocket("ws://localhost:8080");
+    var ws = new WebSocket(ip_address);
     ws.binaryType = "arraybuffer"; 
     ws.onopen = function()
     {
@@ -335,7 +365,7 @@ function WebSocketInit()
       
       if(data_points.length == 0)
       {
-        var sphere = new Sphere(.25, 10, 10);
+        var sphere = new Sphere(.1, 10, 10);
         sphere_vbo = new VertexBufferObject(shader);
         sphere_vbo.addAttributeArray("position", sphere.mPosition, 3); 
         sphere_vbo.addAttributeArray("normal", sphere.mNormal, 3);
