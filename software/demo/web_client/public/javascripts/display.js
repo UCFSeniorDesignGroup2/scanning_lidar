@@ -30,7 +30,15 @@ function main()
   shader.makeActive(); 
 
 
-  var sensor_origin = create_sphere_node(shader, [0,0,0], 1, [0,1,0], 1);
+  var sphere = new Sphere(1, 50, 50, 1);
+  var sphere_vbo = new VertexBufferObject(shader);
+  sphere_vbo.addAttributeArray("position", sphere.mPosition, 3); 
+  sphere_vbo.addAttributeArray("normal", sphere.mNormal, 3);
+  sphere_vbo.addAttributeArray("texcoords", sphere.mTex, 2);
+  sphere_vbo.setIndices(sphere.mIndex);
+
+
+  var sensor_origin = create_sphere_node(shader, sphere_vbo, [0,0,0], [0,1,0]);
   engine.addNode(sensor_origin);
 
 
@@ -262,19 +270,11 @@ function main()
 
 
 
-function create_sphere_node(shader, pos, size, color, env_norm)
+function create_sphere_node(shader, vbo, pos, color)
 {
-  var sphere_size = .25;
-  if(size)
-  {
-    sphere_size = size;
-  }
-  var sphere = new Sphere(sphere_size, 50, 50, env_norm);
-  var sphere_vbo = new VertexBufferObject(shader);
-  sphere_vbo.addAttributeArray("position", sphere.mPosition, 3); 
-  sphere_vbo.addAttributeArray("normal", sphere.mNormal, 3);
-  sphere_vbo.addAttributeArray("texcoords", sphere.mTex, 2);
-  sphere_vbo.setIndices(sphere.mIndex);
+
+
+
 
   var kdiff = new UniformVariable(shader, "material.mKDiff");
   kdiff.setValue([1,1,1]);
@@ -302,7 +302,7 @@ function create_sphere_node(shader, pos, size, color, env_norm)
   sphereNode.addAsset(kshininess);
   sphereNode.addAsset(kambient);
   sphereNode.addAsset(diffusemap);
-  sphereNode.addDrawInterface(new DrawVertexBufferObject(sphere_vbo, "modelMat", "normalMat"));
+  sphereNode.addDrawInterface(new DrawVertexBufferObject(vbo, "modelMat", "normalMat"));
 
   sphereNode.translate(pos);
  
@@ -333,10 +333,19 @@ function WebSocketInit()
       
       if(data_points.length == 0)
       {
+        var sphere = new Sphere(.25, 50, 50);
+        var sphere_vbo = new VertexBufferObject(shader);
+        sphere_vbo.addAttributeArray("position", sphere.mPosition, 3); 
+        sphere_vbo.addAttributeArray("normal", sphere.mNormal, 3);
+        sphere_vbo.addAttributeArray("texcoords", sphere.mTex, 2);
+        sphere_vbo.setIndices(sphere.mIndex);
+
+
         for(var i = 0; i < buffer.length/3; i++)
         {
           var node = create_sphere_node(
                         shader, 
+                        sphere_vbo,
                         [Math.random() * 100, 
                         Math.random() * 100, 
                         Math.random() * 100]);
