@@ -30,11 +30,16 @@ function main()
   shader.makeActive(); 
 
 
-  var sphere = new Sphere(1, 50, 50, 1);
+  var sphere = new Sphere(2, 50, 50, 1);
   var sphere_vbo = new VertexBufferObject(shader);
   sphere_vbo.addAttributeArray("position", sphere.mPosition, 3); 
   sphere_vbo.addAttributeArray("normal", sphere.mNormal, 3);
   sphere_vbo.addAttributeArray("texcoords", sphere.mTex, 2);
+  var ary = [];
+  for(var i = 0; i < 3; i++)
+    ary.push(0);
+  sphere_vbo.addInstancedArray("offset", ary, 3);
+        
   sphere_vbo.setIndices(sphere.mIndex);
 
 
@@ -249,7 +254,7 @@ function main()
     // projection matrix
     var projection_matrix = mat4.create();
     mat4.identity(projection_matrix, projection_matrix);
-    mat4.perspective(projection_matrix, Math.PI/3, canvas.width / canvas.height, .1, 1000);
+    mat4.perspective(projection_matrix, Math.PI/4, canvas.width / canvas.height, 1, 1000);
 
 
     // calculate new projection matrix 
@@ -258,13 +263,9 @@ function main()
    
   }, 1000));
   engine.addNode(full_screen_node);
-  
+
+  console.log(window.location.href);  
   WebSocketInit();
-
-  canvas.onresize = function()
-  {
-
-  };
 
 }
 
@@ -311,6 +312,7 @@ function create_sphere_node(shader, vbo, pos, color)
 
 function WebSocketInit()
 {
+  var sphere_vbo = null;
   if ("WebSocket" in window)
   {
 
@@ -333,42 +335,24 @@ function WebSocketInit()
       
       if(data_points.length == 0)
       {
-        var sphere = new Sphere(.25, 50, 50);
-        var sphere_vbo = new VertexBufferObject(shader);
+        var sphere = new Sphere(.25, 10, 10);
+        sphere_vbo = new VertexBufferObject(shader);
         sphere_vbo.addAttributeArray("position", sphere.mPosition, 3); 
         sphere_vbo.addAttributeArray("normal", sphere.mNormal, 3);
         sphere_vbo.addAttributeArray("texcoords", sphere.mTex, 2);
+   
+ 
+
+        sphere_vbo.addInstancedArray("offset", buffer, 3);
+        
         sphere_vbo.setIndices(sphere.mIndex);
 
-
-        for(var i = 0; i < buffer.length/3; i++)
-        {
-          var node = create_sphere_node(
-                        shader, 
-                        sphere_vbo,
-                        [Math.random() * 100, 
-                        Math.random() * 100, 
-                        Math.random() * 100]);
-
-          engine.addNode(node);
-
-          data_points.push(node);
-        }       
+        var node = create_sphere_node(shader, sphere_vbo, [0,0,0])
+	engine.addNode(node);
+        data_points.push(node);
       }      
-       
-      for(var i = 0; i < buffer.length / 3; i++)
-      {
-        var radius = buffer[i*3 + 0];
-        var theta  = buffer[i*3 + 1];
-        var phi    = buffer[i*3 + 2];
-        
-        var x = radius*Math.sin(theta)*Math.cos(phi);
-        var y = radius*Math.sin(theta)*Math.sin(phi);
-        var z = radius*Math.cos(theta);
-          
-        data_points[i].setLocalPosition([x,y,z]);      
-      }
 
+      sphere_vbo.updateInstancedBufferData("offset", buffer);  
     };
         
     ws.onclose = function()

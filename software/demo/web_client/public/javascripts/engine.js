@@ -114,7 +114,10 @@ function VertexBufferObject(shader)
 {
   this.shader = shader;
   this.attributeBuffers = [];
+  this.instancedBuffers = [];
+  this.instancedExt = null;
   this.indexBuffer = null;
+ 
 }
 
 // add an attribute array
@@ -145,6 +148,61 @@ VertexBufferObject.prototype.addAttributeArray = function(name, ary, itemSize)
   gl.enableVertexAttribArray(buffer.attributeLocation);   
   this.attributeBuffers.push(buffer);
   this.mAssets = [];
+}
+
+VertexBufferObject.prototype.addInstancedArray = function(name, ary, itemSize) {
+
+  var numItems = ary.length / itemSize;
+
+  if(ary.length != itemSize * numItems)
+  {
+    throw "Engine:bad array dimensions";
+  }
+  
+  var gl = this.shader.gl;
+  this.instancedExt = gl.getExtension("ANGLE_instanced_arrays"); 
+
+
+  var buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  if(ary instanceof Float32Array)
+  {
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(ary), gl.STREAM_DRAW);
+  }
+  else
+  {
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(ary), gl.STREAM_DRAW);
+  }
+  buffer.itemSize = itemSize;
+  buffer.numItems = numItems;
+  buffer.attributeLocation = gl.getAttribLocation(this.shader.shaderProgram, name);
+  buffer.name = name;
+  
+  if(buffer.attributeLocation < 0)
+  {
+    throw "Engine:attribute not found in shader!"; 
+  }
+ 
+  gl.enableVertexAttribArray(buffer.attributeLocation);
+  this.instancedBuffers.push(buffer);
+}
+
+VertexBufferObject.prototype.updateInstancedBufferData = function(name, data)
+{ 
+  var buffer = null;
+  for(var i = 0; i < this.instancedBuffers.length; i++)
+  { 
+    if(name == this.instancedBuffers[i].name)
+    {
+      buffer = this.instancedBuffers[i];
+    }
+  }
+  if(buffer)
+  {
+    var gl = this.shader.gl;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STREAM_DRAW);
+  }
 }
 
 VertexBufferObject.prototype.addAsset = function(asset)
@@ -190,17 +248,28 @@ VertexBufferObject.prototype.bind = function()
   }
 
 
-  for(i in this.attributeBuffers)
+  for(var i in this.attributeBuffers)
   {
     var buffer = this.attributeBuffers[i];
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.vertexAttribPointer(buffer.attributeLocation, buffer.itemSize, gl.FLOAT, false, 0, 0); 
+    gl.vertexAttribPointer(buffer.attributeLocation, buffer.itemSize, gl.FLOAT, false, buffer.length, 0); 
   }
 
   if(this.indexBuffer != null)
   {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
   } 
+  
+  if(this.instancedExt)
+  {
+    for(var i in this.instancedBuffers)
+    {
+      var buffer = this.instancedBuffers[i];
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.vertexAttribPointer(buffer.attributeLocation, buffer.itemSize, gl.FLOAT, false, buffer.length, 0);
+      this.instancedExt.vertexAttribDivisorANGLE(buffer.attributeLocation, 1);
+    }
+  }
 }
 
 // make draw call on vbo
@@ -209,16 +278,24 @@ VertexBufferObject.prototype.draw = function(interpolator)
   var gl = this.shader.gl;
   
   //gl.loadMatrixf(interpolator);
-
-  if(this.indexBuffer == null)
+  if(!this.instancedExt)
   {
-    gl.drawArrays(gl.TRIANGLES, 0, this.attributeBuffers[0].numItems);
+    if(this.indexBuffer == null)
+    {
+      gl.drawArrays(gl.TRIANGLES, 0, this.attributeBuffers[0].numItems);
+    }
+    else
+    {
+      gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
   }
   else
   {
-    gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    if(this.indexBuffer != null)
+    {
+      this.instancedExt.drawElementsInstancedANGLE(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0, this.instancedBuffers[0].numItems);
+    }
   }
-  
 }
 
 VertexBufferObject.prototype.unbind = function()
@@ -226,7 +303,7 @@ VertexBufferObject.prototype.unbind = function()
   for(var i = 0; i < this.mAssets.length; i++)
   {
     this.mAssets[i].unbind();
-  }
+  } 
 }
 
 
