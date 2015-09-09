@@ -32,23 +32,19 @@ var connections = [];
 var num_points = 500;
 
 // numver of scans till back at zero point
-var num_scans = 50; 
+var num_scans = 100; 
 
 // max distance for testing
 var max_distance = 30;
 
 // simulated scans per second
-var scans_per_second = 7;
+var scans_per_second = 10;
 
 // slew rate
 var slew_rate = 10;
 
-// fov degrees
-var fov = 270;
-
 // array of data points to generate
 var data_points = [];
-
 
 // create a server
 var server = net.createServer(function(c) {
@@ -135,8 +131,6 @@ function get_next_packet()
 
         // generate random data   
         data_points.push(new data_types.Point3d(radius, theta, phi));
-    
-
     }
   }
   else
@@ -144,19 +138,14 @@ function get_next_packet()
     // generate next data set
     for(var i = 0; i < num_points; i++)
     {
-      
       var radius = Math.random() * max_distance;
       var theta = index * Math.PI / max_index;
       var phi = i * 2 * Math.PI / num_points;
-
-
 
       data_points[i].radius += (radius - data_points[i].radius) / slew_rate;
       data_points[i].theta = theta;
       data_points[i].phi = phi;
     }
-
-
   }
   
   index++;

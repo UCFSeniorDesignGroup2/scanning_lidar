@@ -1,7 +1,7 @@
 // array for storing scanned lines of data
 var data_points = [];
 // number of scan lines to store
-var scan_lines = 50;
+var scan_lines = 100;
 
 // shader 
 var shader = null;
@@ -127,6 +127,8 @@ function main()
   keyspressed['z'] = 0;
   keyspressed['x'] = 0;
 
+
+  var mouse_button_state = false;
   // need a way to do this in engine loop
   // some kind of callback not sure yet
   setInterval(function()
@@ -149,7 +151,7 @@ function main()
    
     var length = vec3.length(mouseLoc);
 
-    if(length > 100)
+    if(length > 100 && mouse_button_state == true)
     {
       camera.rotate(length / 10000, axis);
 
@@ -210,7 +212,16 @@ function main()
     mouseLoc[0] = mouseEvent.clientX - canvas.width / 2;
     mouseLoc[1] = canvas.height / 2 - mouseEvent.clientY;  
   });
-  
+
+  canvas.addEventListener('mousedown', function(mouseEvent) {
+    console.log(mouseEvent);
+    mouse_button_state = true;
+  }); 
+ 
+  canvas.addEventListener('mouseup', function(mouseEvent) {
+    console.log(mouseEvent);
+    mouse_button_state = false;
+  });  
 
   // store key state
   window.onkeyup = function(key)
@@ -365,10 +376,15 @@ function create_node(shader, vbo, pos, color, change_color)
 
   var color_change = new SimpleSynchronousAction(function() {
     kdiff.setValue(sphereNode.diff);
-    sphereNode.diff[0] += 0.02;
-    sphereNode.diff[1] -= 0.02;
-    sphereNode.diff[2] -= 0.02;
-  }, 5);
+    if(sphereNode.diff[0] < 1)
+      sphereNode.diff[0] += 0.003;
+    
+    if(sphereNode.diff[1] > 0)
+      sphereNode.diff[1] -= 0.003;
+    
+    if(sphereNode.diff[2] > 0)
+      sphereNode.diff[2] -= 0.003;
+  }, 50);
  
   if(change_color)
   {

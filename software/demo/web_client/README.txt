@@ -1,6 +1,7 @@
 The purpose of the webclient is to attach to the data server and display the data in a meaningful
 way.  The current implementation plots the data points in 3d and allows the user to navigate the 
-data set in first-person.  'w','s','a','d' move forward, backward, left, and right.  'z' and 'x' move up and down.  Use the mouse to look around the scene. Place mouse in center of screen to stop the camera from rotating. 
+data set in first-person.  'w','s','a','d' move forward, backward, left, and right.  'z' and 'x' 
+move up and down.  Press mouse button to use the mouse to look around the scene. 
 
 The steps for running the web client are as follows.
 
