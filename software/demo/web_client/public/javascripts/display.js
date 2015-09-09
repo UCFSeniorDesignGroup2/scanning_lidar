@@ -1,7 +1,7 @@
 // array for storing scanned lines of data
 var data_points = [];
 // number of scan lines to store
-var scan_lines = 99;
+var scan_lines = 50;
 
 // shader 
 var shader = null;
@@ -25,7 +25,7 @@ function main()
   gl.viewport(0,0,canvas.width, canvas.height); 
   // create engine
   engine = new Engine(gl);
-  engine.setClearColor(1,1,1,1); 
+  engine.setClearColor(0,0,0,1); 
   engine.renderScene();
  
   // create shader
@@ -38,7 +38,7 @@ function main()
 
   // build sensor model
   // create 1 sphere
-  var sphere = new Sphere(2, 50, 50, 1);
+  var sphere = new Sphere(2, 50, 50);
   var sphere_vbo = new VertexBufferObject(shader);
   sphere_vbo.addAttributeArray("position", sphere.mPosition, 3); 
   sphere_vbo.addAttributeArray("normal", sphere.mNormal, 3);
@@ -101,7 +101,11 @@ function main()
   shader.setUniform("light[3].mI0", [1,1,1]);
   shader.setUniform("light[3].mPosition", [0,-150,-100]);
   shader.setUniform("light[3].mQuadraticAttenuation", [0.01]);
-  shader.setUniform("light[3].mEnabled", 1);  
+  shader.setUniform("light[3].mEnabled", 1);    
+  shader.setUniform("light[4].mI0", [1,1,1]);
+  shader.setUniform("light[4].mPosition", [-150,0,0]);
+  shader.setUniform("light[4].mQuadraticAttenuation", [0.01]);
+  shader.setUniform("light[4].mEnabled", 1);  
   shader.setUniform("ambientLight", [0,0,0]); 
  
   
@@ -244,6 +248,7 @@ function main()
       keyspressed['x'] = 0;
     }
   }
+  var invert = 0;
   // store key state
   window.onkeydown = function(key)
   {
@@ -279,6 +284,19 @@ function main()
     {
       keyspressed['x'] = 1;
     } 
+    if(key.keyCode == 32)
+    {
+      if(invert == 0)
+      {
+        engine.setClearColor(1,1,1,1);
+        invert = 1;
+      }
+      else
+      {
+        invert = 0;
+        engine.setClearColor(0,0,0,1);
+      }
+    }
   }
 
 
@@ -309,7 +327,7 @@ function main()
 
 
 // creates a node and adds shader specific properties to it.
-function create_node(shader, vbo, pos, color)
+function create_node(shader, vbo, pos, color, change_color)
 {
   var kdiff = new UniformVariable(shader, "material.mKDiff");
   kdiff.setValue([1,1,1]);
@@ -338,12 +356,27 @@ function create_node(shader, vbo, pos, color)
   sphereNode.addAsset(kambient);
   sphereNode.addAsset(diffusemap);
   sphereNode.addDrawInterface(new DrawVertexBufferObject(vbo, "modelMat", "normalMat"));
-
   if(pos)
   {
     sphereNode.translate(pos);
   }
 
+  sphereNode.diff = [0,1,0];
+
+  var color_change = new SimpleSynchronousAction(function() {
+    kdiff.setValue(sphereNode.diff);
+    sphereNode.diff[0] += 0.02;
+    sphereNode.diff[1] -= 0.02;
+    sphereNode.diff[2] -= 0.02;
+  }, 5);
+ 
+  if(change_color)
+  {
+    sphereNode.addAction(color_change);
+  }
+
+    
+  sphereNode.color_change = color_change;
   return sphereNode; 
 }
 
@@ -377,20 +410,22 @@ function WebSocketInit()
       // if data_points array not filled
       if(data_points.length < scan_lines)
       {
-        var sphere = new Sphere(.1, 10, 10);
+        var sphere = new Sphere(.15, 10, 10);
         sphere_vbo = new VertexBufferObject(shader);
         sphere_vbo.addAttributeArray("position", sphere.mPosition, 3); 
         sphere_vbo.addAttributeArray("normal", sphere.mNormal, 3);
         sphere_vbo.addAttributeArray("texcoords", sphere.mTex, 2); 
         sphere_vbo.addInstancedArray("offset", buffer, 3);
         sphere_vbo.setIndices(sphere.mIndex);
-        var node = create_node(shader, sphere_vbo, [0,0,0])
+        var node = create_node(shader, sphere_vbo, [0,0,0], [0,1,0], 1)
 	      engine.addNode(node);
-        data_points.push(sphere_vbo);
+        node.sphere_vbo = sphere_vbo;
+        data_points.push(node);
       }      
       
       // update scane line positions
-      data_points[index].updateInstancedBufferData("offset", buffer);  
+      data_points[index].sphere_vbo.updateInstancedBufferData("offset", buffer);  
+      data_points[index].diff = [0,1,0];
 
       index++;
       if(index == data_points.length)
