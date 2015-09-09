@@ -1,6 +1,11 @@
+// array for storing scanned lines of data
 var data_points = [];
+// number of scan lines to store
+var scan_lines = 99;
 
+// shader 
 var shader = null;
+// engine
 var engine = null;
 
 function main()
@@ -16,6 +21,7 @@ function main()
   {
     throw "cannot get gl context";
   }
+
   gl.viewport(0,0,canvas.width, canvas.height); 
   // create engine
   engine = new Engine(gl);
@@ -30,49 +36,47 @@ function main()
   shader.makeActive(); 
 
 
+  // build sensor model
+  // create 1 sphere
   var sphere = new Sphere(2, 50, 50, 1);
   var sphere_vbo = new VertexBufferObject(shader);
   sphere_vbo.addAttributeArray("position", sphere.mPosition, 3); 
   sphere_vbo.addAttributeArray("normal", sphere.mNormal, 3);
   sphere_vbo.addAttributeArray("texcoords", sphere.mTex, 2);
   var ary = [];
-  for(var i = 0; i < 3; i++)
+  for(var i = 0; i < 3; i++) // 1 sphere located at the origin
     ary.push(0);
   sphere_vbo.addInstancedArray("offset", ary, 3);
   sphere_vbo.setIndices(sphere.mIndex);
 
+  // create 3 boxes for representing axis
   var cube_vbo = new VertexBufferObject(shader);
   cube_vbo.addAttributeArray("position", cube_positions, 3);
   cube_vbo.addAttributeArray("normal", cube_colors, 3);
   cube_vbo.addAttributeArray("texcoords", cube_texcoords, 2);
   cube_vbo.addInstancedArray("offset", ary, 3);
   cube_vbo.setIndices(cube_indices);
-  var cubeNode1 = create_sphere_node(shader, cube_vbo, [0,0,0], [1,0,0]);
+
+  // create node for each object
+  var cubeNode1 = create_node(shader, cube_vbo, [0,0,0], [1,0,0]);
   cubeNode1.scale([2,.5,.5]);
   cubeNode1.translate([1,0,0]);  
-
-  var cubeNode2 = create_sphere_node(shader, cube_vbo, [0,0,0], [0,1,0]);
+  var cubeNode2 = create_node(shader, cube_vbo, [0,0,0], [0,1,0]);
   cubeNode2.scale([.5,2,.5]);
   cubeNode2.translate([0,1,0]);  
-
-  var cubeNode3 = create_sphere_node(shader, cube_vbo, [0,0,0], [0,0,1]);
+  var cubeNode3 = create_node(shader, cube_vbo, [0,0,0], [0,0,1]);
   cubeNode3.scale([.5,.5,2]);
   cubeNode3.translate([0,0,1]);  
 
-
-
-
+  // create sensor node and add all parts to it.
   var sensor_origin = new Node();
-  sensor_origin.addChild(create_sphere_node(shader, sphere_vbo, [0,0,0], [1,1,1]));
+  sensor_origin.addChild(create_node(shader, sphere_vbo, [0,0,0], [1,1,1]));
   sensor_origin.addChild(cubeNode1); 
   sensor_origin.addChild(cubeNode2);
   sensor_origin.addChild(cubeNode3);
 
-
-
-
+  // add sensor model to engine
   engine.addNode(sensor_origin);
-
 
 
   // projection matrix
@@ -100,6 +104,8 @@ function main()
   shader.setUniform("light[3].mEnabled", 1);  
   shader.setUniform("ambientLight", [0,0,0]); 
  
+  
+  // @note: camera code is kind of 'hacky'
   // create camera and make it orbit scene.(will have a better way to do this some day...
   var camera = new Camera(); 
   // starting pos
@@ -194,12 +200,15 @@ function main()
   }, 30);
 
   // user input
-  canvas.onmousemove = function(mouseEvent)
+  console.log('here');
+  canvas.addEventListener('mousemove', function(mouseEvent)
   {
-    mouseLoc[0] = mouseEvent.x - canvas.width / 2;
-    mouseLoc[1] = canvas.height / 2 - mouseEvent.y;  
-  }
+    mouseLoc[0] = mouseEvent.clientX - canvas.width / 2;
+    mouseLoc[1] = canvas.height / 2 - mouseEvent.clientY;  
+  });
   
+
+  // store key state
   window.onkeyup = function(key)
   {
     if(key.keyCode == 81)
@@ -235,6 +244,7 @@ function main()
       keyspressed['x'] = 0;
     }
   }
+  // store key state
   window.onkeydown = function(key)
   {
     if(key.keyCode == 81)
@@ -269,10 +279,10 @@ function main()
     {
       keyspressed['x'] = 1;
     } 
-
-
   }
 
+
+  // makes sure the canvas is fullscreen
   var full_screen_node = new Node();
   full_screen_node.addAction(new SimpleSynchronousAction(function() {
     canvas.width = window.innerWidth; 
@@ -287,25 +297,20 @@ function main()
 
 
     // calculate new projection matrix 
-    shader.setUniform("projMat", projection_matrix);
- 
+    shader.setUniform("projMat", projection_matrix); 
    
   }, 1000));
   engine.addNode(full_screen_node);
 
-  
+  // initialize connection to websocket for getting data
   WebSocketInit();
 
 }
 
 
-
-function create_sphere_node(shader, vbo, pos, color)
+// creates a node and adds shader specific properties to it.
+function create_node(shader, vbo, pos, color)
 {
-
-
-
-
   var kdiff = new UniformVariable(shader, "material.mKDiff");
   kdiff.setValue([1,1,1]);
   var kspec = new UniformVariable(shader, "material.mKSpec");
@@ -334,11 +339,16 @@ function create_sphere_node(shader, vbo, pos, color)
   sphereNode.addAsset(diffusemap);
   sphereNode.addDrawInterface(new DrawVertexBufferObject(vbo, "modelMat", "normalMat"));
 
-  sphereNode.translate(pos);
- 
+  if(pos)
+  {
+    sphereNode.translate(pos);
+  }
+
   return sphereNode; 
 }
 
+
+// initiailizes a websocket and starts plotting incoming data
 function WebSocketInit()
 {
   var sphere_vbo = null;
@@ -356,33 +366,37 @@ function WebSocketInit()
 
 
     };
-        
+       
+    var index = 0; 
     ws.onmessage = function (evt) 
     { 
       console.log("new data set received");
       
       var buffer = new Float32Array(evt.data);
       
-      if(data_points.length == 0)
+      // if data_points array not filled
+      if(data_points.length < scan_lines)
       {
         var sphere = new Sphere(.1, 10, 10);
         sphere_vbo = new VertexBufferObject(shader);
         sphere_vbo.addAttributeArray("position", sphere.mPosition, 3); 
         sphere_vbo.addAttributeArray("normal", sphere.mNormal, 3);
-        sphere_vbo.addAttributeArray("texcoords", sphere.mTex, 2);
-   
- 
-
+        sphere_vbo.addAttributeArray("texcoords", sphere.mTex, 2); 
         sphere_vbo.addInstancedArray("offset", buffer, 3);
-        
         sphere_vbo.setIndices(sphere.mIndex);
-
-        var node = create_sphere_node(shader, sphere_vbo, [0,0,0])
-	engine.addNode(node);
-        data_points.push(node);
+        var node = create_node(shader, sphere_vbo, [0,0,0])
+	      engine.addNode(node);
+        data_points.push(sphere_vbo);
       }      
+      
+      // update scane line positions
+      data_points[index].updateInstancedBufferData("offset", buffer);  
 
-      sphere_vbo.updateInstancedBufferData("offset", buffer);  
+      index++;
+      if(index == data_points.length)
+      {
+        index = 0;
+      }
     };
         
     ws.onclose = function()

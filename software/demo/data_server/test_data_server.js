@@ -29,16 +29,22 @@ if(process.argv.length >= 3)
 var connections = [];
 
 // number of data_points to generate
-var num_points = 75;
+var num_points = 500;
+
+// numver of scans till back at zero point
+var num_scans = 100; 
 
 // max distance for testing
-var max_distance = 25;
+var max_distance = 30;
 
 // simulated scans per second
 var scans_per_second = 15;
 
 // slew rate
-var slew_rate = 1000;
+var slew_rate = 25;
+
+// fov degrees
+var fov = 270;
 
 // array of data points to generate
 var data_points = [];
@@ -113,6 +119,9 @@ setInterval(function() {
 
 }, 1000/scans_per_second);
 
+
+var index = 0;
+var max_index = num_scans;
 // generate next data packet for testing 
 function get_next_packet()
 {
@@ -120,43 +129,40 @@ function get_next_packet()
   {
     for(var i = 0; i < num_points; i++)
     {
+        var radius = max_distance;
+        var theta = Math.PI*index/max_index;
+        var phi = Math.PI*i/num_points;
 
-      for(var j = 0; j < num_points; j++)
-      {
         // generate random data   
-        data_points.push(new data_types.Point3d(
-                                    max_distance,
-                                    Math.PI*j/num_points, 
-                                    Math.PI*2*i/num_points));
-      }
+        data_points.push(new data_types.Point3d(radius, theta, phi));
+    
 
     }
   }
   else
   {
     // generate next data set
-    for(var i = 0; i < num_points * num_points; i++)
+    for(var i = 0; i < num_points; i++)
     {
-      var radius = Math.random() * max_distance;
-      var theta = Math.random() * Math.PI;
-      var phi = Math.random() * 2 * Math.PI;
-
-      data_points[i].radius += ((radius - data_points[i].radius) / slew_rate);
-      //data_points[i].theta += ((theta - data_points[i].theta) / slew_rate);
-      //data_points[i].phi += ((phi - data_points[i].phi) / slew_rate);
-
-      // if less than zero make it zero
-      data_points[i].radius < 0 ? data_points[i].radius = 0 : data_points[i].radius;
-      data_points[i].theta < 0 ? data_points[i].theta = 0 : data_points[i].theta; 
-      data_points[i].phi < 0 ? data_points[i].phi = 0 : data_points[i].theta;
       
-      // if out of bounds set equal to bounds
-      data_points[i].radius > max_distance ? data_points[i].radius = max_distance : data_points[i].radius;
-      data_points[i].theta > Math.PI ? data_points[i].theta = Math.PI : data_points[i].theta;
-      data_points[i].phi > (Math.PI * 2) ? data_points[i].phi = Math.PI * 2 : data_points[i].phi;
+      var radius = Math.random() * max_distance;
+      var theta = index * Math.PI / max_index;
+      var phi = i * 2 * Math.PI / num_points;
+
+
+
+      data_points[i].radius += (radius - data_points[i].radius) / slew_rate;
+      data_points[i].theta = theta;
+      data_points[i].phi = phi;
     }
 
 
+  }
+  
+  index++;
+  if(index == max_index)
+  {
+    index = 0;
   }
 
   return data_types.Point3dArrayToBuffer(data_points);

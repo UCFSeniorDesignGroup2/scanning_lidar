@@ -150,6 +150,7 @@ VertexBufferObject.prototype.addAttributeArray = function(name, ary, itemSize)
   this.mAssets = [];
 }
 
+// add attribute array that is used in instance drawing mode for particle effects
 VertexBufferObject.prototype.addInstancedArray = function(name, ary, itemSize) {
 
   var numItems = ary.length / itemSize;
@@ -187,9 +188,11 @@ VertexBufferObject.prototype.addInstancedArray = function(name, ary, itemSize) {
   this.instancedBuffers.push(buffer);
 }
 
+// update data in a instanced buffer object
 VertexBufferObject.prototype.updateInstancedBufferData = function(name, data)
 { 
   var buffer = null;
+  // find the buffer to update
   for(var i = 0; i < this.instancedBuffers.length; i++)
   { 
     if(name == this.instancedBuffers[i].name)
@@ -201,7 +204,14 @@ VertexBufferObject.prototype.updateInstancedBufferData = function(name, data)
   {
     var gl = this.shader.gl;
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STREAM_DRAW);
+    if(data instanceof Float32Array)
+    {
+      gl.bufferData(gl.ARRAY_BUFFER, data, gl.STREAM_DRAW);
+    }
+    else
+    {
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STREAM_DRAW);
+    }
   }
 }
 
