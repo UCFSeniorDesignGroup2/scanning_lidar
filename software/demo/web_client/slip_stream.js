@@ -7,14 +7,14 @@ util.inherits(SlipStream, stream.Transform);
 
 exports.SlipStream = SlipStream;
 
-function SlipStream()
+function SlipStream(options)
 {
   if(!(this instanceof SlipStream))
   {
-    return new SlipStream();
+    return new SlipStream(options);
   }
 
-  stream.Transform.call(this, {objectMode:false});
+  stream.Transform.call(this, options);
   
   var self = this;
 

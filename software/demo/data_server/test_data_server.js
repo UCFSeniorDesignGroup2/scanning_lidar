@@ -7,6 +7,8 @@
  * generates random data and sends it to its connected clients.
  */
 
+// util 
+var util = require('util');
 
 // import network api
 var net = require('net');
@@ -14,6 +16,8 @@ var net = require('net');
 // import slip api
 var slip = require('node-slip');
 
+// stream
+var stream = require('stream');
 
 // import data_types
 var data_types = require('./data_types');
@@ -29,7 +33,7 @@ if(process.argv.length >= 3)
 var connections = [];
 
 // number of data_points to generate
-var num_points = 500;
+var num_points = 5000;
 
 // numver of scans till back at zero point
 var num_scans = 100; 
@@ -46,6 +50,34 @@ var slew_rate = 10;
 // array of data points to generate
 var data_points = [];
 
+util.inherits(PacketGenerator, stream.Readable);
+
+function PacketGenerator(options)
+{
+  if(!(this instanceof PacketGenerator))
+  {
+    return new PacketGenerator(options);
+  } 
+
+  stream.Readable.call(this, options);
+
+
+}
+
+PacketGenerator.prototype._read = function(n) {
+  var self = this;
+  setTimeout(function() {
+    
+    self.push(slip.generator(get_next_packet()));  
+    
+  }, 1000 / scans_per_second);   
+  
+
+}
+
+var generator = new PacketGenerator();
+
+
 // create a server
 var server = net.createServer(function(c) {
 
@@ -58,38 +90,7 @@ var server = net.createServer(function(c) {
     console.log('client data: ' + data.length);
   });
 
-  // on connection closed
-  c.on('end', function()
-  {
-    console.log('client disconnected');   
-    // delete connection from array
-    for(var index in connections)
-    {
-      if(connections[index] == c)
-      {
-        connections.splice(index, 1);
-      }
-    }
-  });
-
-  // on error
-  c.on('error', function(err) {
-    // delete connection from array
-    for(var index in connections)
-    {
-      if(connections[index] == c)
-      {
-        connections.splice(index, 1);
-      }
-    }
-    console.log(err);
-    console.log('removing client');
-  });
-
-  // add connection to array
-  connections.push(c);
-
-  console.log(connections.length + ' connections');
+  generator.pipe(c);
 });
 
 // listen on port
@@ -103,18 +104,6 @@ server.listen(port, function() {
 server.on('error', function(err) {
   console.log(err);
 });
-
-
-// continuously send data at scan_rate
-setInterval(function() {
-  for(var c in connections)
-  {
-    // encode packet and send it
-    connections[c].write(slip.generator(get_next_packet()));
-  } 
-
-}, 1000/scans_per_second);
-
 
 var index = 0;
 var max_index = num_scans;

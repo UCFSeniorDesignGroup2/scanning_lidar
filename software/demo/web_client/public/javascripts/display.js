@@ -74,6 +74,7 @@ function main()
   sensor_origin.addChild(cubeNode1); 
   sensor_origin.addChild(cubeNode2);
   sensor_origin.addChild(cubeNode3);
+  sensor_origin.scale([0.25,0.25,0.25]);
 
   // add sensor model to engine
   engine.addNode(sensor_origin);
@@ -87,23 +88,23 @@ function main()
   // set global shader properties
   shader.setUniform("projMat", projection_matrix); 
   shader.setUniform("light[0].mI0", [1,1,1]);
-  shader.setUniform("light[0].mPosition", [0,100,150]);
+  shader.setUniform("light[0].mPosition", [0,100,100]);
   shader.setUniform("light[0].mQuadraticAttenuation", [0.01]);
   shader.setUniform("light[0].mEnabled", 1); 
   shader.setUniform("light[1].mI0", [1,1,1]);
-  shader.setUniform("light[1].mPosition", [0,150,-100]);
+  shader.setUniform("light[1].mPosition", [0,-100,100]);
   shader.setUniform("light[1].mQuadraticAttenuation", [0.01]);
   shader.setUniform("light[1].mEnabled", 1);   
   shader.setUniform("light[2].mI0", [1,1,1]);
-  shader.setUniform("light[2].mPosition", [0,-100,150]);
+  shader.setUniform("light[2].mPosition", [200,0,100]);
   shader.setUniform("light[2].mQuadraticAttenuation", [0.01]);
   shader.setUniform("light[2].mEnabled", 1);   
   shader.setUniform("light[3].mI0", [1,1,1]);
-  shader.setUniform("light[3].mPosition", [0,-150,-100]);
+  shader.setUniform("light[3].mPosition", [-200,0,100]);
   shader.setUniform("light[3].mQuadraticAttenuation", [0.01]);
   shader.setUniform("light[3].mEnabled", 1);    
   shader.setUniform("light[4].mI0", [1,1,1]);
-  shader.setUniform("light[4].mPosition", [-150,0,0]);
+  shader.setUniform("light[4].mPosition", [0,0,-150]);
   shader.setUniform("light[4].mQuadraticAttenuation", [0.01]);
   shader.setUniform("light[4].mEnabled", 1);  
   shader.setUniform("ambientLight", [0,0,0]); 
@@ -113,7 +114,7 @@ function main()
   // create camera and make it orbit scene.(will have a better way to do this some day...
   var camera = new Camera(); 
   // starting pos
-  camera.setPosition([0,25,0]);
+  camera.setPosition([0,50,0]);
   camera.rotate(Math.PI/2, [1,0,0]);
  
   var mouseLoc = [0,0,0,0];
@@ -206,7 +207,6 @@ function main()
   }, 30);
 
   // user input
-  console.log('here');
   canvas.addEventListener('mousemove', function(mouseEvent)
   {
     mouseLoc[0] = mouseEvent.clientX - canvas.width / 2;
@@ -214,12 +214,10 @@ function main()
   });
 
   canvas.addEventListener('mousedown', function(mouseEvent) {
-    console.log(mouseEvent);
     mouse_button_state = true;
   }); 
  
   canvas.addEventListener('mouseup', function(mouseEvent) {
-    console.log(mouseEvent);
     mouse_button_state = false;
   });  
 
@@ -426,7 +424,7 @@ function WebSocketInit()
       // if data_points array not filled
       if(data_points.length < scan_lines)
       {
-        var sphere = new Sphere(.15, 10, 10);
+        var sphere = new Sphere(.15, 3, 3);
         sphere_vbo = new VertexBufferObject(shader);
         sphere_vbo.addAttributeArray("position", sphere.mPosition, 3); 
         sphere_vbo.addAttributeArray("normal", sphere.mNormal, 3);
