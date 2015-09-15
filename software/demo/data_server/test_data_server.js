@@ -38,7 +38,7 @@ var num_points = 20000;
 var num_scans = 50; 
 
 // max distance for testing
-var max_distance = 50;
+var max_distance = 100;
 
 // simulated scans per second
 var scans_per_second = 30;
@@ -159,8 +159,8 @@ function get_next_packet()
 // z = f(x,y)
 function math_func(x,y)
 {
-
-  return 2*(Math.sin(Math.PI*2*x/max_distance - 2*Math.PI*index/num_scans)+Math.cos(Math.PI*2*y/max_distance + 2*Math.PI*index/num_scans));
+  // mwhahahah just for fun
+  return Math.max(-2*(Math.round(Math.pow(Math.E, -1*(-2*x)*(-2*x)))+Math.round(Math.pow(Math.E, -1*(-2*y)*(-2*y))))+2+2*Math.cos((x*x+y*y)/40), 25*Math.pow(Math.E, -1*(x*x+y*y)*3));
 }
 
 
