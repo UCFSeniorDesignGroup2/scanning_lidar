@@ -33,7 +33,7 @@ if(process.argv.length >= 3)
 var connections = [];
 
 // number of data_points to generate
-var num_points = 5000;
+var num_points = 500;
 
 // numver of scans till back at zero point
 var num_scans = 100; 

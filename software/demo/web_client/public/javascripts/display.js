@@ -336,7 +336,7 @@ function main()
 
 
 // creates a node and adds shader specific properties to it.
-function create_node(shader, vbo, pos, color, change_color)
+function create_node(shader, vbo, pos, color, particle)
 {
   var kdiff = new UniformVariable(shader, "material.mKDiff");
   kdiff.setValue([1,1,1]);
@@ -350,7 +350,8 @@ function create_node(shader, vbo, pos, color, change_color)
   kambient.setValue([1,1,1]);
   var diffusemap = new UniformVariable(shader, "diffusemap");
   diffusemap.setValue(0);
-
+  var isparticle = new UniformVariable(shader, "is_particle");
+  isparticle.setValue(0);
 
   if(color)
   {
@@ -364,6 +365,7 @@ function create_node(shader, vbo, pos, color, change_color)
   sphereNode.addAsset(kshininess);
   sphereNode.addAsset(kambient);
   sphereNode.addAsset(diffusemap);
+  sphereNode.addAsset(isparticle);
   sphereNode.addDrawInterface(new DrawVertexBufferObject(vbo, "modelMat", "normalMat"));
   if(pos)
   {
@@ -384,9 +386,11 @@ function create_node(shader, vbo, pos, color, change_color)
       sphereNode.diff[2] -= 0.003;
   }, 50);
  
-  if(change_color)
+  if(particle)
   {
     sphereNode.addAction(color_change);
+   
+    isparticle.setValue(1); 
   }
 
     
@@ -424,21 +428,60 @@ function WebSocketInit()
       // if data_points array not filled
       if(data_points.length < scan_lines)
       {
-        var sphere = new Sphere(.15, 3, 3);
-        sphere_vbo = new VertexBufferObject(shader);
-        sphere_vbo.addAttributeArray("position", sphere.mPosition, 3); 
-        sphere_vbo.addAttributeArray("normal", sphere.mNormal, 3);
-        sphere_vbo.addAttributeArray("texcoords", sphere.mTex, 2); 
-        sphere_vbo.addInstancedArray("offset", buffer, 3);
-        sphere_vbo.setIndices(sphere.mIndex);
-        var node = create_node(shader, sphere_vbo, [0,0,0], [0,1,0], 1)
+        var quad = {};
+        var scale = .05;
+        quad.pos = [
+          1,1,0,
+          1,-1,0,
+          -1,-1,0,
+          -1,1,0
+        ];
+        for(var i = 0; i < quad.pos.length; i++)
+        {
+          quad.pos[i] *= scale;
+        }
+        quad.norm = [
+          0,0,1,
+          0,0,1,
+          0,0,1,
+          0,0,1
+        ];
+        quad.tex = [
+          0,0,
+          0,0,
+          0,0,
+          0,0
+        ];
+        quad.index = [
+          0,1,2,
+          0,2,3
+        ];
+
+        var vbo = new VertexBufferObject(shader);
+        vbo.addAttributeArray("position", quad.pos, 3); 
+        vbo.addAttributeArray("normal", quad.norm, 3);
+        vbo.addAttributeArray("texcoords", quad.tex, 2); 
+        vbo.addInstancedArray("offset", buffer, 3);
+        vbo.setIndices(quad.index);
+        
+        //var sphere = new Sphere(.15,3,3);
+        //vbo.addAttributeArray("position", sphere.mPosition, 3); 
+        //vbo.addAttributeArray("normal", sphere.mNormal, 3);
+        //vbo.addAttributeArray("texcoords", sphere.mTex, 2); 
+        //vbo.addInstancedArray("offset", buffer, 3);
+        //vbo.setIndices(sphere.mIndex);
+        
+
+
+
+        var node = create_node(shader, vbo, [0,0,0], [0,1,0], 1);
 	      engine.addNode(node);
-        node.sphere_vbo = sphere_vbo;
+        node.vbo = vbo;
         data_points.push(node);
       }      
       
       // update scane line positions
-      data_points[index].sphere_vbo.updateInstancedBufferData("offset", buffer);  
+      data_points[index].vbo.updateInstancedBufferData("offset", buffer);  
       data_points[index].diff = [0,1,0];
 
       index++;
