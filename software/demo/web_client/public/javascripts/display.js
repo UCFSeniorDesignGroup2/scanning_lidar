@@ -1,7 +1,7 @@
 // array for storing scanned lines of data
 var data_points = [];
 // number of scan lines to store
-var scan_lines = 100;
+var scan_lines = 5;
 
 // shader 
 var shader = null;
@@ -429,7 +429,7 @@ function WebSocketInit()
       if(data_points.length < scan_lines)
       {
         var quad = {};
-        var scale = .05;
+       var scale = .025;
         quad.pos = [
           1,1,0,
           1,-1,0,

@@ -17,18 +17,14 @@ varying vec2 ftexcoords;
 
 void main()
 {
-  vec3 offset_cart = vec3(0.0,0.0,0.0);
-  offset_cart.x = offset.x * sin(offset.y) * cos(offset.z);
-  offset_cart.y = offset.x * sin(offset.y) * sin(offset.z);
-  offset_cart.z = offset.x * cos(offset.y);
   
   if(is_particle == 1)
   {
-    gl_Position = projMat * (viewMat * modelMat * vec4(offset_cart, 1.0) + vec4(position,0.0));
+    gl_Position = projMat * (viewMat * modelMat * vec4(offset, 1.0) + vec4(position,0.0));
   }
   else
   {
-    gl_Position = projMat * viewMat * modelMat * vec4(offset_cart + position, 1.0);
+    gl_Position = projMat * viewMat * modelMat * vec4(offset + position, 1.0);
   }
   fnormal = normalize(normalMat * normal);
   fposition = (modelMat * vec4(position, 1.0)).xyz;

@@ -22,6 +22,7 @@ var stream = require('stream');
 // import data_types
 var data_types = require('./data_types');
 
+
 // port
 var port = 12345;
 if(process.argv.length >= 3)
@@ -33,16 +34,16 @@ if(process.argv.length >= 3)
 var connections = [];
 
 // number of data_points to generate
-var num_points = 500;
+var num_points = 20000;
 
 // numver of scans till back at zero point
-var num_scans = 100; 
+var num_scans = 50; 
 
 // max distance for testing
-var max_distance = 30;
+var max_distance = 50;
 
 // simulated scans per second
-var scans_per_second = 10;
+var scans_per_second = 1;
 
 // slew rate
 var slew_rate = 10;
@@ -89,6 +90,10 @@ var server = net.createServer(function(c) {
     // just print it out
     console.log('client data: ' + data.length);
   });
+  
+  c.on('close', function(err) {
+    console.log('client disconnected');
+  });
 
   generator.pipe(c);
 });
@@ -114,12 +119,12 @@ function get_next_packet()
   {
     for(var i = 0; i < num_points; i++)
     {
-        var radius = max_distance;
-        var theta = Math.PI*index/max_index;
-        var phi = Math.PI*i/num_points;
+        var x = i;
+	var y = i;
+	var z = i;
 
         // generate random data   
-        data_points.push(new data_types.Point3d(radius, theta, phi));
+        data_points.push(new data_types.Point3d(x,y,z));
     }
   }
   else
@@ -127,13 +132,17 @@ function get_next_packet()
     // generate next data set
     for(var i = 0; i < num_points; i++)
     {
-      var radius = Math.random() * max_distance;
-      var theta = index * Math.PI / max_index;
-      var phi = i * 2 * Math.PI / num_points;
+      var x = (Math.random()-.5)*max_distance;
+      var y = (Math.random()-.5)*max_distance;
+      var z = math_func(x,y);
 
-      data_points[i].radius += (radius - data_points[i].radius) / slew_rate;
-      data_points[i].theta = theta;
-      data_points[i].phi = phi;
+      data_points[i].x = x; 
+      data_points[i].y = y;
+      data_points[i].z = z;
+    }
+    for(var i = 0; i < num_points; i++)
+    {
+      
     }
   }
   
@@ -146,6 +155,13 @@ function get_next_packet()
   return data_types.Point3dArrayToBuffer(data_points);
 }
 
+
+
+function math_func(x,y)
+{
+
+  return 2*(Math.sin(Math.PI*2*x/max_distance - 2*Math.PI*index/num_scans)+Math.cos(Math.PI*2*y/max_distance + 2*Math.PI*index/num_scans));
+}
 
 
 

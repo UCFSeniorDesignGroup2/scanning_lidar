@@ -9,7 +9,10 @@
   "author": "",
   "license": "BSD-2-Clause",
   "dependencies": {
+    "matrix-3d": "^0.1.0",
     "net": "~1.0.2",
-    "node-slip": "0.0.2"
+    "node-slip": "0.0.2",
+    "numeric": "^1.2.6",
+    "transformatrix": "^1.1.1"
   }
 }

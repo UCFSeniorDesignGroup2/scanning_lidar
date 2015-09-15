@@ -1,0 +1,77 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node',
+1 verbose cli   '/usr/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'transformmatrix',
+1 verbose cli   '--save' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.37
+4 verbose node symlink /usr/bin/node
+5 warn package.json data_server@0.0.0 No repository field.
+6 warn package.json node-slip@0.0.2 'repositories' (plural) Not supported. Please pick one as the 'repository' field
+7 warn package.json net@1.0.2 net is also the name of a node core module.
+8 warn package.json net@1.0.2 'repositories' (plural) Not supported. Please pick one as the 'repository' field
+9 verbose readDependencies using package.json deps
+10 verbose cache add [ 'transformmatrix', null ]
+11 verbose cache add name=undefined spec="transformmatrix" args=["transformmatrix",null]
+12 verbose parsed url { protocol: null,
+12 verbose parsed url   slashes: null,
+12 verbose parsed url   auth: null,
+12 verbose parsed url   host: null,
+12 verbose parsed url   port: null,
+12 verbose parsed url   hostname: null,
+12 verbose parsed url   hash: null,
+12 verbose parsed url   search: null,
+12 verbose parsed url   query: null,
+12 verbose parsed url   pathname: 'transformmatrix',
+12 verbose parsed url   path: 'transformmatrix',
+12 verbose parsed url   href: 'transformmatrix' }
+13 silly lockFile 9c6fdb07-transformmatrix transformmatrix
+14 verbose lock transformmatrix /home/jack-primal/.npm/9c6fdb07-transformmatrix.lock
+15 silly lockFile 9c6fdb07-transformmatrix transformmatrix
+16 silly lockFile 9c6fdb07-transformmatrix transformmatrix
+17 verbose addNamed [ 'transformmatrix', '' ]
+18 verbose addNamed [ null, '*' ]
+19 silly lockFile c3548153-transformmatrix transformmatrix@
+20 verbose lock transformmatrix@ /home/jack-primal/.npm/c3548153-transformmatrix.lock
+21 silly addNameRange { name: 'transformmatrix', range: '*', hasData: false }
+22 verbose request where is /transformmatrix
+23 verbose request registry https://registry.npmjs.org/
+24 verbose request id 4fa85eaf2c9bfb39
+25 verbose url raw /transformmatrix
+26 verbose url resolving [ 'https://registry.npmjs.org/', './transformmatrix' ]
+27 verbose url resolved https://registry.npmjs.org/transformmatrix
+28 verbose request where is https://registry.npmjs.org/transformmatrix
+29 info trying registry request attempt 1 at 13:10:01
+30 http GET https://registry.npmjs.org/transformmatrix
+31 http 404 https://registry.npmjs.org/transformmatrix
+32 silly registry.get cb [ 404,
+32 silly registry.get   { 'content-type': 'application/json',
+32 silly registry.get     'cache-control': 'max-age=0',
+32 silly registry.get     'content-length': '2',
+32 silly registry.get     'accept-ranges': 'bytes',
+32 silly registry.get     date: 'Tue, 15 Sep 2015 17:11:39 GMT',
+32 silly registry.get     via: '1.1 varnish',
+32 silly registry.get     age: '0',
+32 silly registry.get     connection: 'keep-alive',
+32 silly registry.get     'x-served-by': 'cache-atl6225-ATL',
+32 silly registry.get     'x-cache': 'MISS',
+32 silly registry.get     'x-cache-hits': '0',
+32 silly registry.get     'x-timer': 'S1442337098.840141,VS0,VE354' } ]
+33 silly lockFile c3548153-transformmatrix transformmatrix@
+34 silly lockFile c3548153-transformmatrix transformmatrix@
+35 error 404 Not Found
+35 error 404
+35 error 404 'transformmatrix' is not in the npm registry.
+35 error 404 You should bug the author to publish it
+35 error 404 It was specified as a dependency of 'data_server'
+35 error 404
+35 error 404 Note that you can also install from a
+35 error 404 tarball, folder, or http url, or git url.
+36 error System Linux 3.5.0-45-generic
+37 error command "/usr/bin/node" "/usr/bin/npm" "install" "transformmatrix" "--save"
+38 error cwd /home/jack-primal/senior_design/scanning_lidar/software/demo/data_server
+39 error node -v v0.10.37
+40 error npm -v 1.4.28
+41 error code E404
+42 verbose exit [ 1, true ]

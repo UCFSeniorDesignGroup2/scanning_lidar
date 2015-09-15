@@ -1,9 +1,9 @@
 // simple data point in spherical coordinates
-exports.Point3d = function Point3d(r,theta,phi)
+exports.Point3d = function Point3d(x,y,z)
 {
-  this.radius = r;
-  this.theta = theta;
-  this.phi = phi;
+  this.x = x;
+  this.y = y;
+  this.z = z;
 }
 
 // converts an array of Point3d objects to a Buffer object
@@ -14,9 +14,9 @@ exports.Point3dArrayToBuffer = function Point3dArrayToBuffer(ary)
   for(var i in ary)
   {
     // write data to buffer in little endian
-    buffer.writeFloatLE(ary[i].radius, i*12 + 0);
-    buffer.writeFloatLE(ary[i].theta, i*12 + 4);
-    buffer.writeFloatLE(ary[i].phi, i*12 + 8); 
+    buffer.writeFloatLE(ary[i].x, i*12 + 0);
+    buffer.writeFloatLE(ary[i].y, i*12 + 4);
+    buffer.writeFloatLE(ary[i].z, i*12 + 8); 
   }
   
   return buffer;
@@ -33,10 +33,10 @@ exports.BufferToPoint3dArray = function BufferToPoint3dArray(buffer)
   for(var i = 0; i < length; i++)
   {
     // parse buffer and store points in array
-    var radius = buffer.readFloatLE(i*12 + 0);
-    var theta = buffer.readFloatLE(i*12 + 4);
-    var phi = buffer.readFloatLE(i*12 + 8);
-    var point = new exports.Point3d(radius,theta,phi);
+    var x = buffer.readFloatLE(i*12 + 0);
+    var y = buffer.readFloatLE(i*12 + 4);
+    var z = buffer.readFloatLE(i*12 + 8);
+    var point = new exports.Point3d(x,y,z);
     
     ary.push(point);
   }
