@@ -30,8 +30,6 @@ if(process.argv.length >= 3)
   port = parseInt(process.argv[2]);
 }
 
-// array for storing connections
-var connections = [];
 
 // number of data_points to generate
 var num_points = 20000;
@@ -43,7 +41,7 @@ var num_scans = 50;
 var max_distance = 50;
 
 // simulated scans per second
-var scans_per_second = 1;
+var scans_per_second = 30;
 
 // slew rate
 var slew_rate = 10;
@@ -51,6 +49,7 @@ var slew_rate = 10;
 // array of data points to generate
 var data_points = [];
 
+// create a packet stream that generates data randomly
 util.inherits(PacketGenerator, stream.Readable);
 
 function PacketGenerator(options)
@@ -156,7 +155,8 @@ function get_next_packet()
 }
 
 
-
+// define the function to plot here
+// z = f(x,y)
 function math_func(x,y)
 {
 

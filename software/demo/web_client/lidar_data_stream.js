@@ -14,16 +14,25 @@ var client = net.connect({port:12345,host:"127.0.0.1"}, function() {
   console.log('connected to server');
 });
 
+// error
+client.on('error', function(err) {
+
+  console.log(err);
+});
+
 // create slip stream to decode data from data server 
 var slip_stream = new SlipStream();
+
+var packet_number = 0;
 slip_stream.on('data', function(data) {
-  console.log("slip data: " + data.length);
+  console.log("packet_number: " + packet_number + " size: " + data.length);
+  packet_number++;
 });
 
 // print out errors
 slip_stream.on('error', function(err) {
 
-  console.log("error");
+  console.log(err);
 });
   
 // pipe the client to slip_stream for decoding
@@ -34,7 +43,7 @@ var server = http.createServer();
 websocket_stream.createServer({server:server}, function(stream) {
 
   stream.on('error', function(err) {
-    console.log("error");
+    console.log(err);
   });  
   
   // pipe slip stream to the websocket 
