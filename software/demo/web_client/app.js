@@ -9,9 +9,9 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var app = express();
 
+var socket_stream = require('websocket-stream');
 
-
-
+var lidar = require('./lidar_data_stream');
 
 
 // view engine setup
@@ -58,6 +58,25 @@ app.use(function(err, req, res, next) {
     message: err.message,
     error: {}
   });
+});
+
+// listen on  port
+app.set('port', 3000);
+var server = app.listen(app.get('port'), function() {
+  console.log('Express server listening on port ' + server.address().port);
+});
+
+// create a websocket
+socket_stream.createServer({server:server}, function(stream) {
+
+  console.log('hello');
+  stream.on('error', function(err) {
+    console.log(err);
+  });
+
+  // pipe lidar data to web client
+  lidar.data_stream.pipe(stream);
+  
 });
 
 

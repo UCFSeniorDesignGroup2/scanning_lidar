@@ -41,7 +41,7 @@ var num_scans = 50;
 var max_distance = 100;
 
 // simulated scans per second
-var scans_per_second = 30;
+var scans_per_second = 100;
 
 // slew rate
 var slew_rate = 10;
@@ -94,6 +94,9 @@ var server = net.createServer(function(c) {
     console.log('client disconnected');
   });
 
+  c.on('error', function(err) {
+    console.log(err);
+  });
   generator.pipe(c);
 });
 
@@ -160,7 +163,7 @@ function get_next_packet()
 function math_func(x,y)
 {
   // mwhahahah just for fun
-  return Math.max(-2*(Math.round(Math.pow(Math.E, -1*(-2*x)*(-2*x)))+Math.round(Math.pow(Math.E, -1*(-2*y)*(-2*y))))+2+2*Math.cos((x*x+y*y)/40), 25*Math.pow(Math.E, -1*(x*x+y*y)*3));
+  return 2*Math.max(-2*(Math.round(Math.pow(Math.E, -1*(-2*x)*(-2*x)))+Math.round(Math.pow(Math.E, -1*(-2*y)*(-2*y))))+2+2*Math.cos((x*x+y*y)/100 - index/num_scans*Math.PI*2), 25*Math.pow(Math.E, -1*(x*x+y*y)*3));
 }
 
 

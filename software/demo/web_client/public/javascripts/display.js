@@ -405,8 +405,8 @@ function WebSocketInit()
   var sphere_vbo = null;
   if ("WebSocket" in window)
   {
-
-    var ip_address = "ws:" + window.location.href.split(":")[1] + ":8080";
+    var url = window.location.href.split("http:")[1];
+    var ip_address = "ws:" + url;
               
     // Let us open a web socket
     var ws = new WebSocket(ip_address);
@@ -421,7 +421,6 @@ function WebSocketInit()
     var index = 0; 
     ws.onmessage = function (evt) 
     { 
-      console.log("new data set received");
       
       var buffer = new Float32Array(evt.data);
       

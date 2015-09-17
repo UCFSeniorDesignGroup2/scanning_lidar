@@ -3,8 +3,6 @@
 
 var net = require('net');
 var SlipStream = require('./slip_stream').SlipStream;
-var http = require('http');
-var websocket_stream = require('websocket-stream');
 
 
 
@@ -38,19 +36,5 @@ slip_stream.on('error', function(err) {
 // pipe the client to slip_stream for decoding
 client.pipe(slip_stream);
 
-// create websocket
-var server = http.createServer();
-websocket_stream.createServer({server:server}, function(stream) {
-
-  stream.on('error', function(err) {
-    console.log(err);
-  });  
-  
-  // pipe slip stream to the websocket 
-  slip_stream.pipe(stream);
-
-});
-
-// listen for connections
-server.listen(8080);
+exports.data_stream = slip_stream;
 
