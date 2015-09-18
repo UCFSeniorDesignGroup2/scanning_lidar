@@ -1,18 +1,20 @@
 {
   "name": "data_server",
   "version": "0.0.0",
-  "description": "",
-  "main": "data_server.js",
+  "description": "The data server and test code are written using the nodejs language.",
+  "main": "data_types.js",
+  "dependencies": {
+    "node-slip": "0.0.2",
+    "numeric": "~1.2.6",
+    "transformatrix": "~1.1.1",
+    "matrix-3d": "~0.1.0",
+    "net": "~1.0.2",
+    "vektor": "~0.3.0"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "BSD-2-Clause",
-  "dependencies": {
-    "matrix-3d": "^0.1.0",
-    "net": "~1.0.2",
-    "node-slip": "0.0.2",
-    "numeric": "^1.2.6",
-    "transformatrix": "^1.1.1"
-  }
+  "license": "BSD-2-Clause"
 }

@@ -69,7 +69,6 @@ var server = app.listen(app.get('port'), function() {
 // create a websocket
 socket_stream.createServer({server:server}, function(stream) {
 
-  console.log('hello');
   stream.on('error', function(err) {
     console.log(err);
   });

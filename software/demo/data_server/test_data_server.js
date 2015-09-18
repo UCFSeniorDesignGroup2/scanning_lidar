@@ -22,6 +22,8 @@ var stream = require('stream');
 // import data_types
 var data_types = require('./data_types');
 
+var vektor = require('vektor');
+
 
 // port
 var port = 12345;
@@ -35,7 +37,7 @@ if(process.argv.length >= 3)
 var num_points = 500;
 
 // numver of scans till back at zero point
-var num_scans = 100; 
+var num_scans = 50;
 
 // max distance for testing
 var max_distance = 30;
@@ -43,8 +45,11 @@ var max_distance = 30;
 // simulated scans per second
 var scans_per_second = 10;
 
-// slew rate
-var slew_rate = 10;
+// percent error
+var percent_error = 0.1;
+
+// field of view
+var fov = Math.PI; 
 
 // array of data points to generate
 var data_points = [];
@@ -114,6 +119,7 @@ server.on('error', function(err) {
 
 var index = 0;
 var max_index = num_scans;
+var inc = 1;
 // generate next data packet for testing 
 function get_next_packet()
 {
@@ -134,26 +140,43 @@ function get_next_packet()
     // generate next data set
     for(var i = 0; i < num_points; i++)
     {
-      var x = max_distance * Math.cos(i/num_points*Math.PI*2) * Math.sin(index/num_scans*Math.PI);
-      var y = max_distance * Math.sin(i/num_points*Math.PI*2) * Math.sin(index/num_scans*Math.PI); 
-      var z = max_distance * Math.cos(index/num_scans*Math.PI);
+      var phi = i/num_points * Math.PI * 2;
+      var x = max_distance * Math.cos(phi);
+      var y = max_distance * Math.sin(phi); 
+      var z = 0;//max_distance * Math.cos(index/num_scans*Math.PI);
 
-      var rand_err = (1+Math.random()/slew_rate);
-      x*=rand_err;
-      y*=rand_err;
-      z*=rand_err;
+      var v = new vektor.vector(x,y,z);
+
+      var transform = new vektor.rotate.RotY((.5-index/num_scans)*Math.PI); 
+      v = transform.dot(v); 
       
 
-      data_points[i].x = x; 
-      data_points[i].y = y;
-      data_points[i].z = z;
+
+      var rand_err = 1+percent_error*Math.random();
+      v = v.scale(rand_err); 
+
+      data_points[i].x = v.x; 
+      data_points[i].y = v.y;
+      data_points[i].z = v.z;
+
+      if(phi > (fov/2) && phi < (Math.PI*2 - fov/2)) 
+      {
+        data_points[i].x = 0;
+        data_points[i].y = 0;
+        data_points[i].z = 0;
+      }
+      
     }
   }
   
-  index++;
+  index+=inc;
   if(index == max_index)
   {
-    index = 0;
+    inc = -1;
+  }
+  if(index == 0)
+  {
+    inc = 1;
   }
 
   return data_types.Point3dArrayToBuffer(data_points);
