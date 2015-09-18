@@ -32,16 +32,16 @@ if(process.argv.length >= 3)
 
 
 // number of data_points to generate
-var num_points = 20000;
+var num_points = 500;
 
 // numver of scans till back at zero point
-var num_scans = 50; 
+var num_scans = 100; 
 
 // max distance for testing
-var max_distance = 100;
+var max_distance = 30;
 
 // simulated scans per second
-var scans_per_second = 100;
+var scans_per_second = 10;
 
 // slew rate
 var slew_rate = 10;
@@ -134,17 +134,19 @@ function get_next_packet()
     // generate next data set
     for(var i = 0; i < num_points; i++)
     {
-      var x = (Math.random()-.5)*max_distance;
-      var y = (Math.random()-.5)*max_distance;
-      var z = math_func(x,y);
+      var x = max_distance * Math.cos(i/num_points*Math.PI*2) * Math.sin(index/num_scans*Math.PI);
+      var y = max_distance * Math.sin(i/num_points*Math.PI*2) * Math.sin(index/num_scans*Math.PI); 
+      var z = max_distance * Math.cos(index/num_scans*Math.PI);
+
+      var rand_err = (1+Math.random()/slew_rate);
+      x*=rand_err;
+      y*=rand_err;
+      z*=rand_err;
+      
 
       data_points[i].x = x; 
       data_points[i].y = y;
       data_points[i].z = z;
-    }
-    for(var i = 0; i < num_points; i++)
-    {
-      
     }
   }
   
@@ -163,7 +165,10 @@ function get_next_packet()
 function math_func(x,y)
 {
   // mwhahahah just for fun
-  return 2*Math.max(-2*(Math.round(Math.pow(Math.E, -1*(-2*x)*(-2*x)))+Math.round(Math.pow(Math.E, -1*(-2*y)*(-2*y))))+2+2*Math.cos((x*x+y*y)/100 - index/num_scans*Math.PI*2), 25*Math.pow(Math.E, -1*(x*x+y*y)*3));
+//  return 2*Math.max(-2*(Math.round(Math.pow(Math.E, -1*(-2*x)*(-2*x)))+Math.round(Math.pow(Math.E, -1*(-2*y)*(-2*y))))+2+2*Math.cos((x*x+y*y)/100 - index/num_scans*Math.PI*2), 25*Math.pow(Math.E, -1*(x*x+y*y)*3));
+
+
+  return max_distance * Math.sqrt(1-x*x+y*y); 
 }
 
 

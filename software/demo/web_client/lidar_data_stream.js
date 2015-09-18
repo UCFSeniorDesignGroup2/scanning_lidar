@@ -21,12 +21,6 @@ client.on('error', function(err) {
 // create slip stream to decode data from data server 
 var slip_stream = new SlipStream();
 
-var packet_number = 0;
-slip_stream.on('data', function(data) {
-  console.log("packet_number: " + packet_number + " size: " + data.length);
-  packet_number++;
-});
-
 // print out errors
 slip_stream.on('error', function(err) {
 

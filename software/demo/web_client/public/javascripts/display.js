@@ -1,7 +1,7 @@
 // array for storing scanned lines of data
 var data_points = [];
 // number of scan lines to store
-var scan_lines = 5;
+var scan_lines = 100;
 
 // shader 
 var shader = null;
