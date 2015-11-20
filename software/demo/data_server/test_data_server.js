@@ -34,16 +34,16 @@ if(process.argv.length >= 3)
 
 
 // number of data_points to generate
-var num_points = 500;
+var num_points = 50;
 
 // numver of scans till back at zero point
-var num_scans = 50;
+var num_scans = 25;
 
 // max distance for testing
-var max_distance = 30;
+var max_distance = 10;
 
 // simulated scans per second
-var scans_per_second = 10;
+var scans_per_second = 5;
 
 // percent error
 var percent_error = 0.1;
