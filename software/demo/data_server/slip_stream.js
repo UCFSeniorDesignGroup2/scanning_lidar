@@ -24,7 +24,8 @@ function SlipStream(options)
   this._slip_receiver = {
     // data packet received
     data: function(input) {
-      self.push(input); 
+      if(input != null)
+        self.push(input); 
     }, 
     // framing error
     framing: function(input) {
@@ -37,7 +38,7 @@ function SlipStream(options)
   };
   
   // slip parser
-  this._slip_parser = new slip.parser(this._slip_receiver);
+  this._slip_parser = new slip.parser(this._slip_receiver, false);
 }
 
 

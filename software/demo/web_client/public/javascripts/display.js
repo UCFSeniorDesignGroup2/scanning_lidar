@@ -1,7 +1,7 @@
 // array for storing scanned lines of data
 var data_points = [];
 // number of scan lines to store
-var scan_lines = 5;
+var scan_lines = 20;
 
 // shader 
 var shader = null;
@@ -377,13 +377,13 @@ function create_node(shader, vbo, pos, color, particle)
   var color_change = new SimpleSynchronousAction(function() {
     kdiff.setValue(sphereNode.diff);
     if(sphereNode.diff[0] < 1)
-      sphereNode.diff[0] += 0.003;
+      sphereNode.diff[0] += 0.03;
     
     if(sphereNode.diff[1] > 0)
-      sphereNode.diff[1] -= 0.003;
+      sphereNode.diff[1] -= 0.03;
     
     if(sphereNode.diff[2] > 0)
-      sphereNode.diff[2] -= 0.003;
+      sphereNode.diff[2] -= 0.03;
   }, 50);
  
   if(particle)

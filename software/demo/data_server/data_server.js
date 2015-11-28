@@ -32,7 +32,7 @@ var vektor = require('vektor');
 // field of view of the sensor
 var fov = Math.PI;
 // number of data points to chunk up
-var packet_chunks = 20;
+var packet_chunks = 5;
 
 // port
 var port = 12345;
@@ -42,7 +42,7 @@ if(process.argv.length >= 3)
 }
 
 // create a serial port stream to get data from the sensor
-var serial_stream = new SerialPortStream('/dev/ttyACM0', { baudRate : 9600 });
+var serial_stream = new SerialPortStream('/dev/ttyACM0', { baudRate : 115200 });
 serial_stream.on('error', function(err) {
   console.log(err);
 });
@@ -66,7 +66,7 @@ var total_length = 0;
 var data_buffer = new Buffer(0);
 DataConverter.prototype._transform = function(chunk, encoding, done) {
 // if chuunk.length not divisible by 8 than its a bad packet
-  if(chunk.length % 8 == 0)
+  if(chunk.length % 8 == 0 && chunk.length != 0)
   { 
     // number of data items in the packet
     var data_items = chunk.length / 8;
@@ -100,10 +100,6 @@ DataConverter.prototype._transform = function(chunk, encoding, done) {
       current_chunk = 0;
       data_buffer = new Buffer(0);
     }
-  }
-  else
-  {
-    this.push(null);
   }
   done();
 }

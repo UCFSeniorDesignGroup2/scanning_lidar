@@ -15,20 +15,25 @@
 // include OAL
 #include "oal/oal_common.h"
 
+// include HAL
 #include <hal/pwm/pwm.h>
 #include <hal/pwm/pwm1/pwm1.h>
-
-#include <drivers/servo/servo.h>
 #include <hal/usb_cdc/hal_usb_cdc.h>
+#include <hal/i2c_master/i2c_master.h>
+#include <hal/i2c_master/i2c3_master/i2c3_master.h>
 
+// include Drivers
+#include <drivers/servo/servo.h>
 #include <drivers/slip_interface/slip_interface.h>
 #include <drivers/range_finder/range_finder.h>
 
+// std libs
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
-
+// implementation of a Data pipe to be used with slip interface
+// pipes data through USB
 class USBDataPipe : public Drivers::DataPipe
 {
 public:
@@ -52,11 +57,15 @@ int USBDataPipe::WriteData(const uint8_t* data, uint32_t length)
 void main_task(void* args)
 {
 	(void)args;
+
+
+
+	// create USB data pipe
 	HAL::USB_CDC* usb_instance = HAL::USB_CDC::GetInstance();
 	usb_instance->Initialize();
-
 	USBDataPipe data_pipe(usb_instance);
 
+	// pass data pipe to slip interface
 	Drivers::SlipInterface slip_interface;
 	slip_interface.SetDataPipe(&data_pipe);
 
@@ -71,36 +80,41 @@ void main_task(void* args)
 	// set start position to 1
 	servo1.SetPosition(1);
 
-	Drivers::RangeFinder range_finder;
+	// initiailze range finder driver
+//	Drivers::RangeFinder range_finder;
+//	HAL::I2C_MASTER* i2c3 = HAL::I2C3_MASTER::GetInstance();
+//	i2c3->Initialize();
+//	range_finder.SetI2CInterface(i2c3);
+//	int32_t distance = range_finder.GetRangeInMiliMeters();
 
+	float pos = 0.0; // position fo the servo
+	int sign = 1; // sign for direction of servo
 
-	float pos = 0.05;
-	int sign = 1;
     while(1)
     {
-    	uint8_t data[64];
-
-    	uint32_t ang_pos = (uint32_t)(pos * 1000);
-    	memcpy(data, (uint8_t*)&ang_pos, sizeof(uint32_t));
-
-    	uint32_t distance = range_finder.GetRangeInMiliMeters();
-    	memcpy(data+4, (uint8_t*)&distance, sizeof(uint32_t));
-
-
-    	slip_interface.SendSlipData(data, 8);
-
-
-    	if(pos > 1)
-    	{
-    		sign = -1;
-    	}
-    	else if(pos < 0)
-    	{
-    		sign = 1;
-    	}
-    	pos += sign * .001; // slowly change the position
-    	servo1.SetPosition(pos);
-		OAL::Thread::Sleep(5);
+//    	uint8_t data[64];
+//
+//    	uint32_t ang_pos = (uint32_t)(pos * 1000);
+//    	memcpy(data, (uint8_t*)&ang_pos, sizeof(uint32_t));
+//
+//    	uint32_t distance = range_finder.GetRangeInMiliMeters();
+//    	memcpy(data+4, (uint8_t*)&distance, sizeof(uint32_t));
+//
+//    	// send data reading to computer
+//    	slip_interface.SendSlipData(data, 8);
+//
+//
+//    	if(pos > 1)
+//    	{
+//    		sign = -1;
+//    	}
+//    	else if(pos < 0)
+//    	{
+//    		sign = 1;
+//    	}
+//    	pos += sign * .01; // move to next position
+//    	servo1.SetPosition(pos);
+		OAL::Thread::Sleep(50);
     }
 
 }
@@ -115,6 +129,8 @@ int main(int argc, char* argv[])
 
 	// start scheduler
 	OAL::Thread::StartScheduler();
+
+	while(1);
 
 	return 0;
 }

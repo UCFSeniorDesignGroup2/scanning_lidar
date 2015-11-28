@@ -10,9 +10,11 @@
 
 #include "hal/pwm/pwm.h"
 
+#include "oal/oal_common.h"
+
 namespace HAL
 {
-	class PWM1 : public PWM
+	class PWM1 : public PWM, OAL::Thread
 	{
 	public:
 
@@ -21,9 +23,15 @@ namespace HAL
 
 		static PWM* GetInstance();
 
+		virtual void Run();
+
 	protected:
 
 		static PWM1 mInstance;
+
+		OAL::Mutex mMutex;
+		float mDutyCycle;
+
 	};
 
 }

@@ -23,12 +23,25 @@ PWM1 PWM1::mInstance;
 int PWM1::Initialize()
 {
 	PWM_Init();
+	mDutyCycle = 0;
+//	Start();
 	return 0;
 }
 
 void PWM1::SetDutyCycle(float duty_cycle)
 {
 	SetPulseWidth(duty_cycle);
+//	mMutex.Lock();
+//	mDutyCycle = duty_cycle;
+//	mMutex.Unlock();
+}
+
+void PWM1::Run()
+{
+	while(1)
+	{
+		OAL::Thread::Sleep(10000);
+	}
 }
 
 PWM* PWM1::GetInstance()
@@ -47,9 +60,9 @@ extern "C"
 	static void PWM_Init()
 	{
 		period = 64000;
-		TimHandle.Instance = TIM1;
+		TimHandle.Instance = TIM3;
 		TimHandle.Init.Period            = period-1;
-		TimHandle.Init.Prescaler         = SystemCoreClock / 3200000 - 1;
+		TimHandle.Init.Prescaler         = SystemCoreClock / 6400000 - 1;
 		TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
 		TimHandle.Init.CounterMode       = TIM_COUNTERMODE_UP;
 		TimHandle.Init.RepetitionCounter = 0;
@@ -89,17 +102,17 @@ extern "C"
 
 	void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
 	{
-		  __HAL_RCC_TIM1_CLK_ENABLE();
-		  __HAL_RCC_GPIOA_CLK_ENABLE();
+		  __HAL_RCC_TIM3_CLK_ENABLE();
+		  __HAL_RCC_GPIOC_CLK_ENABLE();
 
 		  GPIO_InitTypeDef   GPIO_InitStruct;
 
 		  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 		  GPIO_InitStruct.Pull = GPIO_PULLUP;
 		  GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
-		  GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
-		  GPIO_InitStruct.Pin = GPIO_PIN_8;
+		  GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
+		  GPIO_InitStruct.Pin = GPIO_PIN_6;
 
-		  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+		  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 	}
 }

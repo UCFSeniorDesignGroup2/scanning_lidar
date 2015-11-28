@@ -50,8 +50,8 @@ namespace HAL
 				const unsigned char* buffer,
 				unsigned int buffer_size);
 
-		OAL::Semaphore mTxSemaphore;
 		OAL::Semaphore mRxSemaphore;
+		OAL::Semaphore mTxSemaphore;
 		OAL::Semaphore mInitSemaphore;
 		OAL::Mutex mMutex;
 		uint8_t mRxBuffer[USB_CDC_BUFFER_SIZE];
