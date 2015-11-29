@@ -1,7 +1,7 @@
 // array for storing scanned lines of data
 var data_points = [];
 // number of scan lines to store
-var scan_lines = 20;
+var scan_lines = 50;
 
 // shader 
 var shader = null;
@@ -114,8 +114,8 @@ function main()
   // create camera and make it orbit scene.(will have a better way to do this some day...
   var camera = new Camera(); 
   // starting pos
-  camera.setPosition([0,50,0]);
-  camera.rotate(Math.PI/2, [1,0,0]);
+  camera.setPosition([0,40,150]);
+  camera.rotate(Math.PI, [1,0,0]);
  
   var mouseLoc = [0,0,0,0];
   var keyspressed = {};
@@ -427,13 +427,14 @@ function WebSocketInit()
       // if data_points array not filled
       if(data_points.length < scan_lines)
       {
+        var box_size = 5;
         var quad = {};
        var scale = .025;
         quad.pos = [
-          1,1,0,
-          1,-1,0,
-          -1,-1,0,
-          -1,1,0
+          box_size,box_size,0,
+          box_size,-box_size,0,
+          -box_size,-box_size,0,
+          -box_size,box_size,0
         ];
         for(var i = 0; i < quad.pos.length; i++)
         {

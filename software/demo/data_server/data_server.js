@@ -30,9 +30,9 @@ var data_types = require('./data_types');
 var vektor = require('vektor');
 
 // field of view of the sensor
-var fov = Math.PI;
+var fov = 150/180 * Math.PI;
 // number of data points to chunk up
-var packet_chunks = 5;
+var packet_chunks = 10;
 
 // port
 var port = 12345;
@@ -76,7 +76,7 @@ DataConverter.prototype._transform = function(chunk, encoding, done) {
     for(var i = 0; i < data_items; i++)
     {
       var theta = chunk.readUInt32LE(i*8 + 0) / 1000 * fov; // angular position of motor
-      var distance = chunk.readUInt32LE(i*8 + 4)/1000; // distance reading in meters
+      var distance = chunk.readUInt32LE(i*8 + 4)/100; // distance reading in meters
       // convert to cartesian
       var x = distance * Math.cos(theta); 
       var y = distance * Math.sin(theta);
@@ -112,7 +112,7 @@ data_converter.on('error', function(err) {
 
 // print data coming from sensor
 data_converter.on('data', function(data) {
-  console.log(data);
+  console.log("SLIP PACKET - received " + data.length + " bytes");
 });
 
 // create a slip stream to decode data from sensor
