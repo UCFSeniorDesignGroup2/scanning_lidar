@@ -30,7 +30,7 @@ var data_types = require('./data_types');
 var vektor = require('vektor');
 
 // field of view of the sensor
-var fov = 150/180 * Math.PI;
+var fov = 180/180 * Math.PI;
 // number of data points to chunk up
 var packet_chunks = 10;
 
@@ -75,7 +75,7 @@ DataConverter.prototype._transform = function(chunk, encoding, done) {
     // convert the data to 3d then repack it in a buffer
     for(var i = 0; i < data_items; i++)
     {
-      var theta = chunk.readUInt32LE(i*8 + 0) / 1000 * fov; // angular position of motor
+      var theta = chunk.readInt32LE(i*8 + 0) / 1000 * fov; // angular position of motor
       var distance = chunk.readUInt32LE(i*8 + 4)/100; // distance reading in meters
       // convert to cartesian
       var x = distance * Math.cos(theta); 

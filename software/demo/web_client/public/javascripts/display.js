@@ -1,7 +1,7 @@
 // array for storing scanned lines of data
 var data_points = [];
 // number of scan lines to store
-var scan_lines = 50;
+var scan_lines = 20;
 
 // shader 
 var shader = null;
@@ -458,19 +458,19 @@ function WebSocketInit()
         ];
 
         var vbo = new VertexBufferObject(shader);
-        vbo.addAttributeArray("position", quad.pos, 3); 
-        vbo.addAttributeArray("normal", quad.norm, 3);
-        vbo.addAttributeArray("texcoords", quad.tex, 2); 
-        vbo.addInstancedArray("offset", buffer, 3);
-        vbo.setIndices(quad.index);
-        
-//        var sphere = new Sphere(.05,10,10);
-//        vbo.addAttributeArray("position", sphere.mPosition, 3); 
-//        vbo.addAttributeArray("normal", sphere.mNormal, 3);
-//        vbo.addAttributeArray("texcoords", sphere.mTex, 2); 
+//        vbo.addAttributeArray("position", quad.pos, 3); 
+//        vbo.addAttributeArray("normal", quad.norm, 3);
+//        vbo.addAttributeArray("texcoords", quad.tex, 2); 
 //        vbo.addInstancedArray("offset", buffer, 3);
-//        vbo.setIndices(sphere.mIndex);
+//        vbo.setIndices(quad.index);
         
+        var sphere = new Sphere(.25,20,20);
+        vbo.addAttributeArray("position", sphere.mPosition, 3); 
+        vbo.addAttributeArray("normal", sphere.mNormal, 3);
+        vbo.addAttributeArray("texcoords", sphere.mTex, 2); 
+        vbo.addInstancedArray("offset", buffer, 3);
+        vbo.setIndices(sphere.mIndex);
+       
 
 
 

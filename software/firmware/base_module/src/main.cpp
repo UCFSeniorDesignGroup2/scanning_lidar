@@ -81,39 +81,39 @@ void main_task(void* args)
 	servo1.SetPosition(1);
 
 	// initiailze range finder driver
-//	Drivers::RangeFinder range_finder;
-//	HAL::I2C_MASTER* i2c3 = HAL::I2C3_MASTER::GetInstance();
-//	i2c3->Initialize();
-//	range_finder.SetI2CInterface(i2c3);
-//	int32_t distance = range_finder.GetRangeInMiliMeters();
+	Drivers::RangeFinder range_finder;
+	HAL::I2C_MASTER* i2c3 = HAL::I2C3_MASTER::GetInstance();
+	i2c3->Initialize();
+	range_finder.SetI2CInterface(i2c3);
+	int32_t distance = range_finder.GetRangeInMiliMeters();
 
 	float pos = 0.0; // position fo the servo
 	int sign = 1; // sign for direction of servo
 
     while(1)
     {
-//    	uint8_t data[64];
-//
-//    	uint32_t ang_pos = (uint32_t)(pos * 1000);
-//    	memcpy(data, (uint8_t*)&ang_pos, sizeof(uint32_t));
-//
-//    	uint32_t distance = range_finder.GetRangeInMiliMeters();
-//    	memcpy(data+4, (uint8_t*)&distance, sizeof(uint32_t));
-//
-//    	// send data reading to computer
-//    	slip_interface.SendSlipData(data, 8);
-//
-//
-//    	if(pos > 1)
-//    	{
-//    		sign = -1;
-//    	}
-//    	else if(pos < 0)
-//    	{
-//    		sign = 1;
-//    	}
-//    	pos += sign * .01; // move to next position
-//    	servo1.SetPosition(pos);
+    	uint8_t data[64];
+
+    	uint32_t ang_pos = (uint32_t)(pos * 1000);
+    	memcpy(data, (uint8_t*)&ang_pos, sizeof(uint32_t));
+
+    	uint32_t distance = range_finder.GetRangeInMiliMeters();
+    	memcpy(data+4, (uint8_t*)&distance, sizeof(uint32_t));
+
+    	// send data reading to computer
+    	slip_interface.SendSlipData(data, 8);
+
+
+    	if(pos > 1)
+    	{
+    		sign = -1;
+    	}
+    	else if(pos < 0)
+    	{
+    		sign = 1;
+    	}
+    	pos += sign * .01; // move to next position
+    	servo1.SetPosition(pos);
 		OAL::Thread::Sleep(50);
     }
 

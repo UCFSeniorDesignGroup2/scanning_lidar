@@ -15,6 +15,7 @@
 
 
 
+
 // slip characters
 typedef enum
 {
@@ -27,29 +28,37 @@ typedef enum
 // encode data into a slip packet
 int EncodeSlip(const unsigned char* data_raw, unsigned char* data_encoded, unsigned int len); 
 
-//#define MAX_POS 2000
-//#define MIN_POS 1000
+#define MAX_POS 2100
+#define MIN_POS 980
 
-#define MAX_POS 2400
-#define MIN_POS 544
+//#define MAX_POS 2400
+//#define MIN_POS 544
 
 #define NUM_TICKS ((MAX_POS-MIN_POS)/4)
-#define AVG 2
+#define AVG 10
 
-#define PHI1 130
+// adjust for servo lag
+#define PHI1 100
+#define PHI2 30
+//#define PHI1 0
+//#define PHI2 0
 
-#define PHI2 40
 
+#define SERVO_DELAY 2
 
 Servo myservo;  // create servo object to control a servo
 
 // angular position of servo
 long pos = 0;   
 
+// delay servo
+int delay_count = 50;
+
 // sign for controlling pos of servo
 int sign = 1;
 
 LIDARLite myLidarLite;
+
 
 void setup() {
   Serial.begin(115200);
@@ -64,23 +73,24 @@ unsigned long distance = 0;
 
 void loop() {
 
-  pos+=(sign*(MAX_POS-MIN_POS)/NUM_TICKS); // move servo
   myservo.writeMicroseconds(MIN_POS+pos);
-  
-  if(pos <= 0 || pos >= (MAX_POS-MIN_POS)) // change direction
+
+  if(delay_count < SERVO_DELAY)
   {
-    sign *= -1;
+    delay(1);
+    delay_count++;
+    return;
   }
-
+  delay_count = 0;
   
-
+  distance = myLidarLite.distanceContinuous()*10; // convert from cm to mm;
   for(int i = 0; i < AVG; i++)
   {
     distance += myLidarLite.distanceContinuous()*10; // convert from cm to mm
     delay(1);
   }
-  distance /= AVG;
-  unsigned long ang_pos = 0;
+  distance /= (AVG+1);
+  long ang_pos = 0;
   if(sign < 0)
   {
     //  convert angular pos into expected format
@@ -89,6 +99,15 @@ void loop() {
   else
   {
     ang_pos = ((pos-(PHI2)) * 1000) / (MAX_POS - MIN_POS);
+  }
+
+  if(ang_pos > 10000)
+  {
+    ang_pos = 10000;
+  }
+  else if(ang_pos < 0)
+  {
+    ang_pos = 0;
   }
   
   // create a data packet
@@ -102,7 +121,16 @@ void loop() {
 
   // send the slip packet through serial port
   Serial.write(slip_buf, len);
-  Serial.flush();  
+//  mySerial.write(slip_buf, len);
+//  Serial.flush();  
+
+  pos+=(sign*(MAX_POS-MIN_POS)/NUM_TICKS); // move servo
+  if(pos <= 0 || pos >= (MAX_POS-MIN_POS)) // change direction
+  {
+    sign *= -1;
+  }
+
+
 }
 
 
