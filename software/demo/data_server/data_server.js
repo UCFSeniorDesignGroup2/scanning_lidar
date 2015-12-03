@@ -30,7 +30,7 @@ var data_types = require('./data_types');
 var vektor = require('vektor');
 
 // field of view of the sensor
-var fov = 180/180 * Math.PI;
+var fov = 170/180 * Math.PI;
 // number of data points to chunk up
 var packet_chunks = 10;
 
