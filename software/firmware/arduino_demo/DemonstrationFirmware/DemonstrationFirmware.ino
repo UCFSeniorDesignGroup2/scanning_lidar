@@ -34,14 +34,17 @@ int EncodeSlip(const unsigned char* data_raw, unsigned char* data_encoded, unsig
 //#define MAX_POS 2400
 //#define MIN_POS 544
 
-#define NUM_TICKS ((MAX_POS-MIN_POS)/4)
-#define AVG 10
+#define NUM_TICKS ((MAX_POS-MIN_POS)/1)
+#define AVG 0
+
+//#define NUM_TICKS ((MAX_POS-MIN_POS)/1)
+//#define AVG 20
 
 // adjust for servo lag
-#define PHI1 100
-#define PHI2 30
-//#define PHI1 0
-//#define PHI2 0
+//#define PHI1 75
+//#define PHI2 75
+#define PHI1 170
+#define PHI2 25
 
 
 #define SERVO_DELAY 2
@@ -52,7 +55,7 @@ Servo myservo;  // create servo object to control a servo
 long pos = 0;   
 
 // delay servo
-int delay_count = 50;
+int delay_count = 0;
 
 // sign for controlling pos of servo
 int sign = 1;
@@ -101,9 +104,9 @@ void loop() {
     ang_pos = ((pos-(PHI2)) * 1000) / (MAX_POS - MIN_POS);
   }
 
-  if(ang_pos > 10000)
+  if(ang_pos > 1000)
   {
-    ang_pos = 10000;
+    ang_pos = 1000;
   }
   else if(ang_pos < 0)
   {

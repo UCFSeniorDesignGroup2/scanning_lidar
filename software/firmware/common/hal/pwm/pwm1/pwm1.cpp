@@ -52,11 +52,11 @@ PWM* PWM1::GetInstance()
 
 extern "C"
 {
-	TIM_HandleTypeDef    TimHandle;
-	TIM_OC_InitTypeDef sConfig;
+	static TIM_HandleTypeDef    TimHandle;
+	static TIM_OC_InitTypeDef sConfig;
 
-	uint32_t period = 0;
-	uint8_t err = 0;
+	static uint32_t period = 0;
+	static uint8_t err = 0;
 	static void PWM_Init()
 	{
 		period = 64000;

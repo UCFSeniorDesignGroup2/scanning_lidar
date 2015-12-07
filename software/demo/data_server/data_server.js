@@ -32,7 +32,7 @@ var vektor = require('vektor');
 // field of view of the sensor
 var fov = 170/180 * Math.PI;
 // number of data points to chunk up
-var packet_chunks = 10;
+var packet_chunks = 20;
 
 // port
 var port = 12345;

@@ -23,6 +23,7 @@ int Servo::Initiailze()
 	{
 		return -1;
 	}
+	return 0;
 }
 
 void Servo::SetPosition(float pos)

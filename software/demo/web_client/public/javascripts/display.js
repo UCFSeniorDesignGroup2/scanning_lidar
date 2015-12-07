@@ -1,7 +1,7 @@
 // array for storing scanned lines of data
 var data_points = [];
 // number of scan lines to store
-var scan_lines = 20;
+var scan_lines = 40;
 
 // shader 
 var shader = null;
@@ -114,8 +114,8 @@ function main()
   // create camera and make it orbit scene.(will have a better way to do this some day...
   var camera = new Camera(); 
   // starting pos
-  camera.setPosition([0,40,150]);
-  camera.rotate(Math.PI, [1,0,0]);
+  camera.setPosition([0,40,-150]);
+//  camera.rotate(Math.PI, [1,0,0]);
  
   var mouseLoc = [0,0,0,0];
   var keyspressed = {};
