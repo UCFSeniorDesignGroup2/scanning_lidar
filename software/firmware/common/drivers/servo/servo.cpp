@@ -28,7 +28,7 @@ int Servo::Initiailze()
 
 void Servo::SetPosition(float pos)
 {
-	// .03 - .12
-	float duty = (.09*pos + .03);
+	// .05 - .1
+	float duty = (.05*pos + .05);
 	mInterface->SetDutyCycle(duty);
 }

@@ -86,10 +86,11 @@ void ExternalClock1::SetInterrupt(void (*cb)())
 //   only fire interrupt 1 time then disable interrupts
 void ExternalClock1::OnIsr()
 {
+	HAL_NVIC_DisableIRQ(TIM3_IRQn);
+
 	if(mCb != NULL)
 		mCb();
 
-	HAL_NVIC_DisableIRQ(TIM3_IRQn);
 }
 
 // return instance of ExtrernalClock1
@@ -111,25 +112,6 @@ extern "C"
 			((ExternalClock1*)ExternalClock1::GetInstance())->OnIsr();
 	}
 
-
-	// initialize hardware
-	void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
-	{
-		  __HAL_RCC_TIM3_CLK_ENABLE();
-		  __HAL_RCC_GPIOC_CLK_ENABLE();
-
-		  GPIO_InitTypeDef   GPIO_InitStruct;
-
-		  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-		  GPIO_InitStruct.Pull = GPIO_PULLUP;
-		  GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
-		  GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
-		  GPIO_InitStruct.Pin = GPIO_PIN_9;
-
-		  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-
-	}
 
 	/**
 	  * @brief  This function handles TIM interrupt request.

@@ -54,7 +54,7 @@ namespace OAL
 		// Create a thread from a function
 		static oal_thread_handle Launch(
 				void (*code)(void*),
-				unsigned int stacksize=128,
+				unsigned int stacksize=1024,
 				unsigned int priority=1);
 		// delete a thread created statically
 		static void Delete(oal_thread_handle thread);

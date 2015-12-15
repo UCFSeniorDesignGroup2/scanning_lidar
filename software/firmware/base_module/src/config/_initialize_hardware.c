@@ -130,14 +130,15 @@ configure_system_clock(void)
 	  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
 	  // Enable HSE Oscillator and activate PLL with HSE as source
-	  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-	  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+	  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+//	  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+	  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
 	  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-	  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+	  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
 
 	  // This assumes the HSE_VALUE is a multiple of 1MHz. If this is not
 	  // your case, you have to recompute these PLL constants.
-	  RCC_OscInitStruct.PLL.PLLM = (HSI_VALUE/1000000u);
+	  RCC_OscInitStruct.PLL.PLLM = (HSE_VALUE/1000000u);
 	  RCC_OscInitStruct.PLL.PLLN = 336;
 	  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
 	  RCC_OscInitStruct.PLL.PLLQ = 7;

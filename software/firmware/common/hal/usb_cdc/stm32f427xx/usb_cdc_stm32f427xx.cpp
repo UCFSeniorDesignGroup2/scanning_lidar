@@ -5,6 +5,8 @@
 #include <usbd_core.h>
 #include <usbd_cdc.h>
 
+#include <FreeRTOS.h>
+
 
 using namespace HAL;
 
@@ -92,17 +94,12 @@ int USB_CDC_STM32F427xx::WriteDataRec(
 //		if(mTxSemaphore.TakeTimeout(10) < 0)
 //			return -1;
 
-
 	USBD_CDC_SetTxBuffer(&USBD_Device, (uint8_t*)buffer, (uint16_t)buffer_size);
 
 	if(USBD_CDC_TransmitPacket(&USBD_Device) != USBD_OK)
 	{
 		return -1;
 	}
-
-//	if(hcdc->TxState == 1)
-//		if(mTxSemaphore.TakeTimeout(10) < 0)
-//			return -1;
 
 	mTxSemaphore.Take();
 

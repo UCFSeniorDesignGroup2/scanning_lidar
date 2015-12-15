@@ -32,7 +32,7 @@ var vektor = require('vektor');
 // field of view of the sensor
 var fov = 170/180 * Math.PI;
 // number of data points to chunk up
-var packet_chunks = 20;
+var packet_chunks = 1;
 
 // port
 var port = 12345;
@@ -64,6 +64,10 @@ var current_chunk = 0;
 var total_length = 0;
 // chunk of data packets
 var data_buffer = new Buffer(0);
+
+// average radius
+var avg_radius = 0;
+
 DataConverter.prototype._transform = function(chunk, encoding, done) {
 // if chuunk.length not divisible by 8 than its a bad packet
   if(chunk.length % 8 == 0 && chunk.length != 0)
@@ -76,7 +80,8 @@ DataConverter.prototype._transform = function(chunk, encoding, done) {
     for(var i = 0; i < data_items; i++)
     {
       var theta = chunk.readInt32LE(i*8 + 0) / 1000 * fov; // angular position of motor
-      var distance = chunk.readUInt32LE(i*8 + 4)/100; // distance reading in meters
+      var distance = chunk.readUInt32LE(i*8 + 4)/10; // distance reading in meters
+      avg_radius += distance;
       // convert to cartesian
       var x = distance * Math.cos(theta); 
       var y = distance * Math.sin(theta);
@@ -95,6 +100,9 @@ DataConverter.prototype._transform = function(chunk, encoding, done) {
     // total number of chunks reached 
     if(current_chunk == packet_chunks)
     { 
+      avg_radius /= packet_chunks;
+      console.log("distance " + avg_radius*10); 
+      avg_radius = 0;
       // encode in slip then send through pipe
       this.push(slip.generator(data_buffer)); 
       current_chunk = 0;

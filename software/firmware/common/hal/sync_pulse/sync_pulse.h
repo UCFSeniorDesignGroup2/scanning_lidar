@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include <hal/external_clock/external_clock.h>
+#include <hal/pwm/external_clock/external_clock.h>
 
 namespace HAL
 {

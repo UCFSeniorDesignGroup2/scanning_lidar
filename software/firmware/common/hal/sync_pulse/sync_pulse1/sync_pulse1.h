@@ -21,6 +21,7 @@ namespace HAL
 	// start its internal counter.
 	// this pin must be synchronized with the external
 	// 16MHz clock in order to get accurate range readings.
+	// (also should probably fire the laser pulse right after the start pulse?)
 	class SyncPulse1 : public SyncPulse
 	{
 	public:
